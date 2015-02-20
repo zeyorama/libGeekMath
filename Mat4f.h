@@ -59,6 +59,11 @@ public:
   operator *=( const Mat4f& factor );
 
   float*
+  operator []( unsigned int row );
+  const float*
+  operator []( unsigned int row ) const;
+
+  float*
   Values( void );
 
   void

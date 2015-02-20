@@ -25,12 +25,16 @@
 
 class Vec2f;
 class Vec3f;
+class Mat4f;
 
 class Vec4f
 {
 public:
   Vec4f( void );
   Vec4f( const float value );
+  Vec4f( const Mat4f& matrix );
+  Vec4f( const Vec2f& vector );
+  Vec4f( const Vec3f& vector );
   Vec4f( const Vec4f& vector );
   Vec4f( const Vec3f& Axis, const float Angle );
   Vec4f( const float x, const float y, const float z, const float w );
@@ -90,6 +94,9 @@ public:
   Max( const Vec4f& vector ) const;
   Vec4f
   Min( const Vec4f& vector ) const;
+
+  Mat4f
+  RotationMatrix( void ) const;
 
   Vec4f
   operator +( const float summand ) const;

@@ -33,13 +33,11 @@
 #include <cstdio>
 #include <cstring>
 
-static const unsigned int MATRIX_SIZE = MATRIX_SIZE;
+static const unsigned int MATRIX_SIZE = sizeof( float ) * 16;
 
 Mat4f::Mat4f( void )
 {
-  for ( unsigned int row = 0; row < 4; row++ )
-    for ( unsigned int col = 0; col < 4; col++ )
-      m_Values[ row ][ col ] = 0.0f;
+  memset( m_Values, 0.0f, MATRIX_SIZE );
 }
 
 Mat4f::Mat4f( const Mat4f& matrix )
@@ -109,20 +107,20 @@ Mat4f::Rotation( const float x, const float y, const float z )
 {
   Mat4f rx, ry, rz;
 
-  rx.m_Values[0][0] = 1.0f;    rx.m_Values[1][0] = 0.0f  ;   rx.m_Values[2][0] = 0.0f   ;  rx.m_Values[3][0] = 0.0f;
-  rx.m_Values[0][1] = 0.0f;    rx.m_Values[1][1] = cosf(x);  rx.m_Values[2][1] = -sinf(x); rx.m_Values[3][1] = 0.0f;
-  rx.m_Values[0][2] = 0.0f;    rx.m_Values[1][2] = sinf(x);  rx.m_Values[2][2] = cosf(x) ; rx.m_Values[3][2] = 0.0f;
-  rx.m_Values[0][3] = 0.0f;    rx.m_Values[1][3] = 0.0f  ;   rx.m_Values[2][3] = 0.0f   ;  rx.m_Values[3][3] = 1.0f;
+  rx.m_Values[0][0] = 1.0f;     rx.m_Values[1][0] = 0.0f     ; rx.m_Values[2][0] =  0.0f     ; rx.m_Values[3][0] = 0.0f;
+  rx.m_Values[0][1] = 0.0f;     rx.m_Values[1][1] = cosf( x ); rx.m_Values[2][1] = -sinf( x ); rx.m_Values[3][1] = 0.0f;
+  rx.m_Values[0][2] = 0.0f;     rx.m_Values[1][2] = sinf( x ); rx.m_Values[2][2] =  cosf( x ); rx.m_Values[3][2] = 0.0f;
+  rx.m_Values[0][3] = 0.0f;     rx.m_Values[1][3] = 0.0f     ; rx.m_Values[2][3] =  0.0f     ; rx.m_Values[3][3] = 1.0f;
 
-  ry.m_Values[0][0] = cosf(y); ry.m_Values[1][0] = 0.0f;     ry.m_Values[2][0] = -sinf(y); ry.m_Values[3][0] = 0.0f;
-  ry.m_Values[0][1] = 0.0f  ;  ry.m_Values[1][1] = 1.0f;     ry.m_Values[2][1] = 0.0f   ;  ry.m_Values[3][1] = 0.0f;
-  ry.m_Values[0][2] = sinf(y); ry.m_Values[1][2] = 0.0f;     ry.m_Values[2][2] = cosf(y) ; ry.m_Values[3][2] = 0.0f;
-  ry.m_Values[0][3] = 0.0f  ;  ry.m_Values[1][3] = 0.0f;     ry.m_Values[2][3] = 0.0f   ;  ry.m_Values[3][3] = 1.0f;
+  ry.m_Values[0][0] = cosf( y ); ry.m_Values[1][0] = 0.0f;     ry.m_Values[2][0] = -sinf( y ); ry.m_Values[3][0] = 0.0f;
+  ry.m_Values[0][1] = 0.0f     ; ry.m_Values[1][1] = 1.0f;     ry.m_Values[2][1] =  0.0f     ; ry.m_Values[3][1] = 0.0f;
+  ry.m_Values[0][2] = sinf( y ); ry.m_Values[1][2] = 0.0f;     ry.m_Values[2][2] =  cosf( y ); ry.m_Values[3][2] = 0.0f;
+  ry.m_Values[0][3] = 0.0f     ; ry.m_Values[1][3] = 0.0f;     ry.m_Values[2][3] =  0.0f     ; ry.m_Values[3][3] = 1.0f;
 
-  rz.m_Values[0][0] = cosf(z); rz.m_Values[1][0] = -sinf(z); rz.m_Values[2][0] = 0.0f;     rz.m_Values[3][0] = 0.0f;
-  rz.m_Values[0][1] = sinf(z); rz.m_Values[1][1] = cosf(z) ; rz.m_Values[2][1] = 0.0f;     rz.m_Values[3][1] = 0.0f;
-  rz.m_Values[0][2] = 0.0f  ;  rz.m_Values[1][2] = 0.0f   ;  rz.m_Values[2][2] = 1.0f;     rz.m_Values[3][2] = 0.0f;
-  rz.m_Values[0][3] = 0.0f  ;  rz.m_Values[1][3] = 0.0f   ;  rz.m_Values[2][3] = 0.0f;     rz.m_Values[3][3] = 1.0f;
+  rz.m_Values[0][0] = cosf( z ); rz.m_Values[1][0] = -sinf( z ); rz.m_Values[2][0] = 0.0f;     rz.m_Values[3][0] = 0.0f;
+  rz.m_Values[0][1] = sinf( z ); rz.m_Values[1][1] =  cosf( z ); rz.m_Values[2][1] = 0.0f;     rz.m_Values[3][1] = 0.0f;
+  rz.m_Values[0][2] = 0.0f     ; rz.m_Values[1][2] =  0.0f     ; rz.m_Values[2][2] = 1.0f;     rz.m_Values[3][2] = 0.0f;
+  rz.m_Values[0][3] = 0.0f     ; rz.m_Values[1][3] =  0.0f     ; rz.m_Values[2][3] = 0.0f;     rz.m_Values[3][3] = 1.0f;
 
   *this = rz * ry * rx;
 
@@ -177,6 +175,18 @@ Mat4f::operator *( const Mat4f& factor ) const
         result.m_Values[ row ][ col ] += m_Values[ trow ][ col ] * factor.m_Values[ row ][ trow ];
 
   return result;
+}
+
+float*
+Mat4f::operator []( unsigned int row )
+{
+  return m_Values[ row ];
+}
+
+const float*
+Mat4f::operator []( unsigned int row ) const
+{
+  return m_Values[ row ];
 }
 
 float*

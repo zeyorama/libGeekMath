@@ -25,6 +25,7 @@
 
 #include "Vec2f.h"
 #include "Vec3f.h"
+#include "Mat4f.h"
 
 #include <cmath>
 #include <cstdio>
@@ -44,6 +45,71 @@ Vec4f::Vec4f( const float value )
   m_Values[ 1 ] = value;
   m_Values[ 2 ] = value;
   m_Values[ 3 ] = value;
+}
+
+Vec4f::Vec4f( const Mat4f& matrix )
+{
+  const float trace = matrix[ 0 ][ 0 ] + matrix[ 1 ][ 1 ] + matrix[ 2 ][ 2 ];
+
+  if      ( trace > 0 )
+  {
+    const float s = 0.5f / sqrtf( trace + 1.0f );
+
+    m_Values[ 3 ] = 0.25f / s;
+    m_Values[ 0 ] = ( matrix[ 1 ][ 2 ] - matrix[ 2 ][ 1 ] ) * s;
+    m_Values[ 1 ] = ( matrix[ 2 ][ 0 ] - matrix[ 0 ][ 2 ] ) * s;
+    m_Values[ 2 ] = ( matrix[ 0 ][ 1 ] - matrix[ 1 ][ 0 ] ) * s;
+  }
+  else if ( matrix[ 0 ][ 0 ] > matrix[ 1 ][ 1 ] && matrix[ 0 ][ 0 ] > matrix[ 2 ][ 2 ] )
+  {
+    const float s = 2.0f * sqrtf( 1.0f + matrix[ 0 ][ 0 ] - matrix[ 1 ][ 1 ] - matrix[ 2 ][ 2 ] );
+
+    m_Values[ 3 ] = ( matrix[ 1 ][ 2 ] - matrix[ 2 ][ 1 ] ) / s;
+    m_Values[ 0 ] = 0.25f * s;
+    m_Values[ 1 ] = ( matrix[ 1 ][ 0 ] + matrix[ 0 ][ 1 ] ) / s;
+    m_Values[ 2 ] = ( matrix[ 2 ][ 0 ] + matrix[ 0 ][ 2 ] ) / s;
+  }
+  else if ( matrix[ 1 ][ 1 ] > matrix[ 2 ][ 2 ])
+  {
+    const float s = 2.0f * sqrtf( 1.0f + matrix[ 1 ][ 1 ] - matrix[ 0 ][ 0 ] - matrix[ 2 ][ 2 ] );
+
+    m_Values[ 3 ] = ( matrix[ 2 ][ 0 ] - matrix[ 0 ][ 2 ] ) / s;
+    m_Values[ 0 ] = ( matrix[ 1 ][ 0 ] + matrix[ 0 ][ 1 ] ) / s;
+    m_Values[ 1 ] = 0.25f * s;
+    m_Values[ 2 ] = ( matrix[ 2 ][ 1 ] + matrix[ 1 ][ 2 ] ) / s;
+  }
+  else
+  {
+    const float s = 2.0f * sqrtf( 1.0f + matrix[ 2 ][ 2 ] - matrix[ 1 ][ 1 ] - matrix[ 0 ][ 0 ]);
+
+    m_Values[ 3 ] = ( matrix[ 0 ][ 1 ] - matrix[ 1 ][ 0 ] ) / s;
+    m_Values[ 0 ] = ( matrix[ 2 ][ 0 ] + matrix[ 0 ][ 2 ] ) / s;
+    m_Values[ 1 ] = ( matrix[ 1 ][ 2 ] + matrix[ 2 ][ 1 ] ) / s;
+    m_Values[ 2 ] = 0.25f * s;
+  }
+
+  const float length = Length();
+
+  m_Values[ 3 ] = m_Values[ 3 ] / length;
+  m_Values[ 0 ] = m_Values[ 0 ] / length;
+  m_Values[ 1 ] = m_Values[ 1 ] / length;
+  m_Values[ 2 ] = m_Values[ 2 ] / length;
+}
+
+Vec4f::Vec4f( const Vec2f& vector )
+{
+  m_Values[ 0 ] = vector.X();
+  m_Values[ 1 ] = vector.Y();
+  m_Values[ 2 ] = 0.0f;
+  m_Values[ 3 ] = 1.0f;
+}
+
+Vec4f::Vec4f( const Vec3f& vector )
+{
+  m_Values[ 0 ] = vector.X();
+  m_Values[ 1 ] = vector.Y();
+  m_Values[ 2 ] = vector.Z();
+  m_Values[ 3 ] = 1.0f;
 }
 
 Vec4f::Vec4f( const Vec4f& vector )
@@ -308,6 +374,12 @@ Vec4f::Min( const Vec4f& vector ) const
       m_Values[ 2 ] < vector.m_Values[ 2 ] ? m_Values[ 2 ] : vector.m_Values[ 2 ],
       m_Values[ 3 ] < vector.m_Values[ 3 ] ? m_Values[ 3 ] : vector.m_Values[ 3 ]
   );
+}
+
+Mat4f
+Vec4f::RotationMatrix( void ) const
+{
+  return Mat4f().Rotation( *this );
 }
 
 Vec4f
