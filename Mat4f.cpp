@@ -74,9 +74,19 @@ Mat4f::Identity( void )
 Mat4f
 Mat4f::Rotation( const Vec4f& quaternion )
 {
+  Vec3f f = Vec3f(        2.0f * (quaternion.X() * quaternion.Z() - quaternion.W() * quaternion.Y()),
+                          2.0f * (quaternion.Y() * quaternion.Z() + quaternion.W() * quaternion.X()),
+                   1.0f - 2.0f * (quaternion.X() * quaternion.X() + quaternion.Y() * quaternion.Y()));
 
+  Vec3f u = Vec3f(        2.0f * (quaternion.X() * quaternion.Y() + quaternion.W() * quaternion.Z()),
+                   1.0f - 2.0f * (quaternion.X() * quaternion.X() + quaternion.Z() * quaternion.Z()),
+                          2.0f * (quaternion.Y() * quaternion.Z() - quaternion.W() * quaternion.X()));
 
-  return *this;
+  Vec3f r = Vec3f( 1.0f - 2.0f * (quaternion.Y() * quaternion.Y() + quaternion.Z() * quaternion.Z()),
+                          2.0f * (quaternion.X() * quaternion.Y() - quaternion.W() * quaternion.Z()),
+                          2.0f * (quaternion.X() * quaternion.Z() + quaternion.W() * quaternion.Y()));
+
+  return Rotation( f, u, r );
 }
 
 Mat4f
