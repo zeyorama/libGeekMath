@@ -24,6 +24,7 @@ Created on: Feb 18, 2015
 
 #include <cmath>
 #include <cstdio>
+#include <cstring>
 
 Vec2f::Vec2f( void )
 {

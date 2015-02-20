@@ -25,11 +25,13 @@
 #define MAT4F_H_
 
 class Vec3f;
+class Vec4f;
 
 class Mat4f
 {
 public:
   Mat4f( void );
+  Mat4f( const Mat4f& matrix );
   virtual
   ~Mat4f( void );
 
@@ -38,9 +40,23 @@ public:
   Mat4f
   Identity( void );
   Mat4f
+  Rotation( const Vec4f& quaternion );
+  Mat4f
+  Rotation( const Vec3f& forward, const Vec3f& up );
+  Mat4f
+  Rotation( const float x, const float y, const float z );
+  Mat4f
+  Rotation( const Vec3f& n, const Vec3f& v, const Vec3f& u );
+  Mat4f
   Transpose( void ) const;
   Mat4f
   Translation( const Vec3f& translation );
+
+  Mat4f
+  operator *( const Mat4f& factor ) const;
+
+  Mat4f&
+  operator *=( const Mat4f& factor );
 
   float*
   Values( void );

@@ -28,13 +28,14 @@
 
 #include <cmath>
 #include <cstdio>
+#include <cstring>
 
 Vec4f::Vec4f( void )
 {
   m_Values[ 0 ] = 0.0f;
   m_Values[ 1 ] = 0.0f;
   m_Values[ 2 ] = 0.0f;
-  m_Values[ 3 ] = 1.0f;
+  m_Values[ 3 ] = 0.0f;
 }
 
 Vec4f::Vec4f( const float value )

@@ -27,6 +27,7 @@ Created on: Feb 18, 2015
 
 #include <cmath>
 #include <cstdio>
+#include <cstring>
 
 Vec3f::Vec3f( void )
 {
