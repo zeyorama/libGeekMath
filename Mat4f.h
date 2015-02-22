@@ -27,6 +27,47 @@
 class Vec3f;
 class Vec4f;
 
+enum ZeyoMatrixType
+{
+  EMPTY,
+  IDENTITY,
+  SCALE,
+  TRANSLATION,
+  ROTATION,
+  PERSPECTIVE,
+  ORTHOGRAPHIC
+};
+
+struct ZeyoPerspectiveMatrix
+{
+  float FieldOfView;
+  float Aspect;
+  float zNear;
+  float zFar;
+};
+
+struct ZeyoOrtographicMatrix
+{
+  float Top;
+  float Bottom;
+  float Left;
+  float Right;
+  float zNear;
+  float zFar;
+};
+
+struct ZeyoMatrixSetting
+{
+  ZeyoMatrixType  Type;
+  union
+  {
+    ZeyoPerspectiveMatrix Perspective;
+    ZeyoOrtographicMatrix Orthographic;
+
+    unsigned int          Empty;
+  } Setting;
+};
+
 class Mat4f
 {
 public:
@@ -51,6 +92,8 @@ public:
   Transpose( void ) const;
   Mat4f
   Translation( const Vec3f& translation );
+  Mat4f
+  Perspective( const float FoV, const float Aspect, const float zNear, const float zFar );
 
   Mat4f
   operator *( const Mat4f& factor ) const;
@@ -73,7 +116,8 @@ public:
 
 protected:
 private:
-  float m_Values[ 4 ][ 4 ];
+  float             m_Values[ 4 ][ 4 ];
+  ZeyoMatrixSetting m_Setting;
 
 };
 

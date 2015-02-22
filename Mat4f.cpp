@@ -38,11 +38,15 @@ static const unsigned int MATRIX_SIZE = sizeof( float ) * 16;
 Mat4f::Mat4f( void )
 {
   memset( m_Values, 0.0f, MATRIX_SIZE );
+
+  m_Setting.Type = EMPTY;
+  m_Setting.Setting.Empty = ( unsigned int )-1;
 }
 
 Mat4f::Mat4f( const Mat4f& matrix )
 {
   memcpy( m_Values, matrix.m_Values, MATRIX_SIZE );
+  memcpy( &m_Setting, &( matrix.m_Setting ), sizeof( ZeyoMatrixSetting ) );
 }
 
 Mat4f::~Mat4f( void ) { return; }
@@ -55,6 +59,8 @@ Mat4f::Scale( const Vec3f& scale )
   m_Values[ 2 ][ 2 ] = scale.Z();
   m_Values[ 3 ][ 3 ] = 1.0f;
 
+  m_Setting.Type = SCALE;
+
   return *this;
 }
 
@@ -65,6 +71,9 @@ Mat4f::Identity( void )
   m_Values[ 1 ][ 1 ] = 1.0f;
   m_Values[ 2 ][ 2 ] = 1.0f;
   m_Values[ 3 ][ 3 ] = 1.0f;
+
+  m_Setting.Type = IDENTITY;
+  m_Setting.Setting.Empty = (unsigned int)-1;
 
   return *this;
 }
@@ -84,6 +93,8 @@ Mat4f::Rotation( const Vec4f& quaternion )
                           2.0f * (quaternion.X() * quaternion.Y() - quaternion.W() * quaternion.Z()),
                           2.0f * (quaternion.X() * quaternion.Z() + quaternion.W() * quaternion.Y()));
 
+  m_Setting.Type = ROTATION;
+
   return Rotation( f, u, r );
 }
 
@@ -98,6 +109,8 @@ Mat4f::Rotation( const Vec3f& forward, const Vec3f& up )
   m_Values[ 1 ][ 0 ] = v.X(); m_Values[ 1 ][ 1 ] = v.Y(); m_Values[ 1 ][ 2 ] = v.Z(); m_Values[ 1 ][ 3 ] = 0.0f;
   m_Values[ 2 ][ 0 ] = n.X(); m_Values[ 2 ][ 1 ] = n.Y(); m_Values[ 2 ][ 2 ] = n.Z(); m_Values[ 2 ][ 3 ] = 0.0f;
   m_Values[ 3 ][ 0 ] = 0.0f;  m_Values[ 3 ][ 1 ] = 0.0f;  m_Values[ 3 ][ 2 ] = 0.0f;  m_Values[ 3 ][ 3 ] = 1.0f;
+
+  m_Setting.Type = ROTATION;
 
   return *this;
 }
@@ -124,6 +137,8 @@ Mat4f::Rotation( const float x, const float y, const float z )
 
   *this = rz * ry * rx;
 
+  m_Setting.Type = ROTATION;
+
   return *this;
 }
 
@@ -134,6 +149,8 @@ Mat4f::Rotation( const Vec3f& n, const Vec3f& v, const Vec3f& u )
   m_Values[ 1 ][ 0 ] = v.X(); m_Values[ 1 ][ 1 ] = v.Y(); m_Values[ 1 ][ 2 ] = v.Z(); m_Values[ 1 ][ 3 ] = 0.0f;
   m_Values[ 2 ][ 0 ] = n.X(); m_Values[ 2 ][ 1 ] = n.Y(); m_Values[ 2 ][ 2 ] = n.Z(); m_Values[ 2 ][ 3 ] = 0.0f;
   m_Values[ 3 ][ 0 ] = 0.0f;  m_Values[ 3 ][ 1 ] = 0.0f;  m_Values[ 3 ][ 2 ] = 0.0f;  m_Values[ 3 ][ 3 ] = 1.0f;
+
+  m_Setting.Type = ROTATION;
 
   return *this;
 }
@@ -160,6 +177,32 @@ Mat4f::Translation( const Vec3f& translation )
   m_Values[ 3 ][ 1 ] = translation.Y();
   m_Values[ 3 ][ 2 ] = translation.Z();
   m_Values[ 3 ][ 3 ] = 1.0f;
+
+  m_Setting.Type = TRANSLATION;
+
+  return *this;
+}
+
+Mat4f
+Mat4f::Perspective( const float FoV, const float Aspect, const float zNear, const float zFar )
+{
+  const float zRange        = zNear - zFar;
+  const float invTanHalfFOV = 1.0f / tanf( DEG2RAD( FoV ) / 2.0f );
+
+  memset( m_Values, 0.0f, MATRIX_SIZE );
+
+  m_Values[0][0] = invTanHalfFOV / Aspect;
+  m_Values[1][1] = invTanHalfFOV;
+  m_Values[2][2] = -( zNear + zFar ) / zRange;
+  m_Values[3][2] = 2.0f * zFar * zNear / zRange;
+  m_Values[2][3] = 1.0f;
+
+  m_Setting.Type = PERSPECTIVE;
+
+  m_Setting.Setting.Perspective.FieldOfView = FoV;
+  m_Setting.Setting.Perspective.Aspect      = Aspect;
+  m_Setting.Setting.Perspective.zNear       = zNear;
+  m_Setting.Setting.Perspective.zFar        = zFar;
 
   return *this;
 }
@@ -204,9 +247,42 @@ Mat4f::Set( const unsigned int row, const unsigned int col, const float value )
 void
 Mat4f::Print( void ) const
 {
-  puts( "Matrix 4x4 float:" );
   printf( "( %f | %f | %f | %f )\n", m_Values[ 0 ][ 0 ], m_Values[ 0 ][ 1 ], m_Values[ 0 ][ 2 ], m_Values[ 0 ][ 3 ] );
   printf( "| %f | %f | %f | %f |\n", m_Values[ 1 ][ 0 ], m_Values[ 1 ][ 1 ], m_Values[ 1 ][ 2 ], m_Values[ 1 ][ 3 ] );
   printf( "| %f | %f | %f | %f |\n", m_Values[ 2 ][ 0 ], m_Values[ 2 ][ 1 ], m_Values[ 2 ][ 2 ], m_Values[ 2 ][ 3 ] );
   printf( "( %f | %f | %f | %f )\n", m_Values[ 3 ][ 0 ], m_Values[ 3 ][ 1 ], m_Values[ 3 ][ 2 ], m_Values[ 3 ][ 3 ] );
+
+  puts( "Matrix-Setting:" );
+
+  printf( "Matrix type: " );
+  switch( m_Setting.Type )
+  {
+    case EMPTY:
+      puts( "Misc (Empty)" );
+      break;
+    case ROTATION:
+      puts( "Rotation" );
+      break;
+    case TRANSLATION:
+      puts( "Translation" );
+      break;
+    case SCALE:
+      puts( "Scale" );
+      break;
+    case PERSPECTIVE:
+      puts( "Perspective" );
+      printf( "FOV:    %f\nAspect: %f\nzNear:  %f\nzFar:   %f\n",
+          m_Setting.Setting.Perspective.FieldOfView,
+          m_Setting.Setting.Perspective.Aspect,
+          m_Setting.Setting.Perspective.zNear,
+          m_Setting.Setting.Perspective.zFar );
+      break;
+    case ORTHOGRAPHIC:
+      puts( "Orthographic" );
+      break;
+    default:
+      puts( "???" );
+      break;
+  }
+
 }
