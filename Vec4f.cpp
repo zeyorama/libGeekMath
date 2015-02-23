@@ -31,22 +31,6 @@
 #include <cstdio>
 #include <cstring>
 
-Vec4f::Vec4f( void )
-{
-  m_Values[ 0 ] = 0.0f;
-  m_Values[ 1 ] = 0.0f;
-  m_Values[ 2 ] = 0.0f;
-  m_Values[ 3 ] = 0.0f;
-}
-
-Vec4f::Vec4f( const float value )
-{
-  m_Values[ 0 ] = value;
-  m_Values[ 1 ] = value;
-  m_Values[ 2 ] = value;
-  m_Values[ 3 ] = value;
-}
-
 Vec4f::Vec4f( const Mat4f& matrix )
 {
   const float trace = matrix[ 0 ][ 0 ] + matrix[ 1 ][ 1 ] + matrix[ 2 ][ 2 ];

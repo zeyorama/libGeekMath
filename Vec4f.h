@@ -30,14 +30,12 @@ class Mat4f;
 class Vec4f
 {
 public:
-  Vec4f( void );
-  Vec4f( const float value );
   Vec4f( const Mat4f& matrix );
   Vec4f( const Vec2f& vector );
   Vec4f( const Vec3f& vector );
   Vec4f( const Vec4f& vector );
   Vec4f( const Vec3f& Axis, const float Angle );
-  Vec4f( const float x, const float y, const float z, const float w );
+  Vec4f( const float x = 0.0f, const float y = 0.0f, const float z = 0.0f, const float w = 1.0f );
   virtual
   ~Vec4f( void );
 

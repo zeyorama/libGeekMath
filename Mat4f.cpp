@@ -155,6 +155,26 @@ Mat4f::Rotation( const Vec3f& n, const Vec3f& v, const Vec3f& u )
   return *this;
 }
 
+Vec3f
+Mat4f::Transform( const Vec3f& vector )
+{
+  Vec4f r2( vector );
+
+  return ( Transform( Vec4f( vector ) ) ).XYZ();
+}
+
+Vec4f
+Mat4f::Transform( const Vec4f& vector )
+{
+  Vec4f result( 0, 0, 0, 0 );
+
+  for(unsigned int i = 0; i < 4; i++)
+    for(unsigned int j = 0; j < 4; j++)
+      result[i] += m_Values[j][i] * vector[j];
+
+  return result;
+}
+
 Mat4f
 Mat4f::Transpose( void ) const
 {

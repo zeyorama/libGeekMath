@@ -88,6 +88,10 @@ public:
   Rotation( const float x, const float y, const float z );
   Mat4f
   Rotation( const Vec3f& n, const Vec3f& v, const Vec3f& u );
+  Vec3f
+  Transform( const Vec3f& vector );
+  Vec4f
+  Transform( const Vec4f& vector );
   Mat4f
   Transpose( void ) const;
   Mat4f
