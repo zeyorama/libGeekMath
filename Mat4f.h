@@ -94,6 +94,10 @@ public:
   Translation( const Vec3f& translation );
   Mat4f
   Perspective( const float FoV, const float Aspect, const float zNear, const float zFar );
+  Mat4f
+  Orthographic( const float Left, const float Right,
+                const float Bottom, const float Top,
+                const float zNear, const float zFar );
 
   Mat4f
   operator *( const Mat4f& factor ) const;

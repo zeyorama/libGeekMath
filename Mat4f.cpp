@@ -186,6 +186,8 @@ Mat4f::Translation( const Vec3f& translation )
 Mat4f
 Mat4f::Perspective( const float FoV, const float Aspect, const float zNear, const float zFar )
 {
+  if ( zNear >= zFar ) throw "ERROR: zNear must be less than zFar.";
+
   const float zRange        = zNear - zFar;
   const float invTanHalfFOV = 1.0f / tanf( DEG2RAD( FoV ) / 2.0f );
 
@@ -203,6 +205,39 @@ Mat4f::Perspective( const float FoV, const float Aspect, const float zNear, cons
   m_Setting.Setting.Perspective.Aspect      = Aspect;
   m_Setting.Setting.Perspective.zNear       = zNear;
   m_Setting.Setting.Perspective.zFar        = zFar;
+
+  return *this;
+}
+
+Mat4f
+Mat4f::Orthographic( const float Left, const float Right,
+                     const float Bottom, const float Top,
+                     const float zNear, const float zFar )
+{
+  if ( zNear >= zFar ) throw "ERROR: zNear must be less than zFar.";
+
+  const float width = ( Right - Left );
+  const float height = ( Top - Bottom );
+  const float depth = ( zFar - zNear );
+
+  memset( m_Values, 0.0f, MATRIX_SIZE );
+
+  m_Values[0][0] =  2.0f/width;
+  m_Values[3][0] = -( Right + Left ) / width;
+  m_Values[1][1] =  2.0f/height;
+  m_Values[3][1] = -( Top + Bottom ) / height;
+  m_Values[2][2] = -2.0f/depth;
+  m_Values[3][2] = -( zFar + zNear ) / depth;
+  m_Values[3][3] =  1.0f;
+
+  m_Setting.Type = ORTHOGRAPHIC;
+
+  m_Setting.Setting.Orthographic.Left   = Left;
+  m_Setting.Setting.Orthographic.Right  = Right;
+  m_Setting.Setting.Orthographic.Bottom = Bottom;
+  m_Setting.Setting.Orthographic.Top    = Top;
+  m_Setting.Setting.Orthographic.zNear  = zNear;
+  m_Setting.Setting.Orthographic.zFar   = zFar;
 
   return *this;
 }
@@ -279,6 +314,13 @@ Mat4f::Print( void ) const
       break;
     case ORTHOGRAPHIC:
       puts( "Orthographic" );
+      printf( "Left:    %f\nRight: %f\nBottom:    %f\nTop: %f\nzNear:  %f\nzFar:   %f\n",
+          m_Setting.Setting.Orthographic.Left,
+          m_Setting.Setting.Orthographic.Right,
+          m_Setting.Setting.Orthographic.Bottom,
+          m_Setting.Setting.Orthographic.Top,
+          m_Setting.Setting.Orthographic.zNear,
+          m_Setting.Setting.Orthographic.zFar );
       break;
     default:
       puts( "???" );
