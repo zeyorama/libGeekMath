@@ -425,10 +425,10 @@ Vec4f
 Vec4f::operator *( const Vec3f& factor ) const
 {
   return Vec4f(
-    (m_Values[3] * factor[3]) - (m_Values[0] * factor[0]) - (m_Values[1] * factor[1]) - (m_Values[2] * factor[2]),
-    (m_Values[0] * factor[3]) + (m_Values[3] * factor[0]) + (m_Values[1] * factor[2]) - (m_Values[2] * factor[1]),
-    (m_Values[1] * factor[3]) + (m_Values[3] * factor[1]) + (m_Values[2] * factor[0]) - (m_Values[0] * factor[2]),
-    (m_Values[2] * factor[3]) + (m_Values[3] * factor[2]) + (m_Values[0] * factor[1]) - (m_Values[1] * factor[0])
+     (m_Values[3] * factor[0]) + (m_Values[1] * factor[2]) - (m_Values[2] * factor[1]),
+     (m_Values[3] * factor[1]) + (m_Values[2] * factor[0]) - (m_Values[0] * factor[2]),
+     (m_Values[3] * factor[2]) + (m_Values[0] * factor[1]) - (m_Values[1] * factor[0]),
+    -(m_Values[0] * factor[0]) - (m_Values[1] * factor[1]) - (m_Values[2] * factor[2])
   );
 }
 
@@ -507,6 +507,16 @@ Vec4f::operator *=( const float factor )
   m_Values[ 1 ] *= factor;
   m_Values[ 2 ] *= factor;
   m_Values[ 3 ] *= factor;
+
+  return *this;
+}
+
+Vec4f&
+Vec4f::operator *=( const Vec3f& factor )
+{
+  Vec4f vec = (*this) * factor;
+
+  memcpy( m_Values, vec.m_Values, sizeof( float ) * 4 );
 
   return *this;
 }

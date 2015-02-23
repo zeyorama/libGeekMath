@@ -123,6 +123,8 @@ public:
   Vec4f&
   operator *=( const float factor );
   Vec4f&
+  operator *=( const Vec3f& factor );
+  Vec4f&
   operator *=( const Vec4f& factor );
   Vec4f&
   operator /=( const float dividend );
