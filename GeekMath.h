@@ -15,18 +15,20 @@ freely, subject to the following restrictions:
    misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 
-\file ZeyoMathConstants.h
+\file ZeyoMath.h
 
-Created on: Feb 20, 2015
+Created on: Feb 19, 2015
 \author     fkzey
 */
 
-#ifndef LIBZEYOMATH_ZEYOMATHCONSTANTS_H_
-#define LIBZEYOMATH_ZEYOMATHCONSTANTS_H_
+#ifndef ZEYOMATH_H_
+#define ZEYOMATH_H_
 
-#define ZEYO_PI 3.14159265359f
+#include "GeekMathConstants.h"
+#include "Vec2f.h"
+#include "Vec3f.h"
+#include "Vec4f.h"
 
-#define DEG2RAD( x ) ((x)*0.0174532925f)
-#define RAD2DEG( x ) ((x)*57.2957795f)
+#include "Mat4f.h"
 
-#endif /* LIBZEYOMATH_ZEYOMATHCONSTANTS_H_ */
+#endif /* ZEYOMATH_H_ */
