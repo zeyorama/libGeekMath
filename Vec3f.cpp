@@ -23,7 +23,7 @@ Created on: Feb 18, 2015
 #include "Vec3f.h"
 
 #include "Vec2f.h"
-#include "Vec4f.h"
+#include "Quaternion.h"
 
 #include <cmath>
 #include <cstdio>
@@ -169,10 +169,10 @@ Vec3f::Reflect( const Vec3f& normal ) const
 }
 
 Vec3f
-Vec3f::Rotate( const Vec4f& quaternion ) const
+Vec3f::Rotate( const Quaternion& quaternion ) const
 {
-  Vec4f conjugateQ = quaternion.Conjugate();
-  Vec4f w          = quaternion * ( *this ) * conjugateQ;
+  Quaternion conjugateQ = quaternion.Conjugate();
+  Quaternion w          = quaternion * ( *this ) * conjugateQ;
 
   return Vec3f( w.X(), w.Y(), w.Z() );
 }

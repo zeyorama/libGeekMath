@@ -24,7 +24,7 @@ Created on: Feb 18, 2015
 #define VEC3F_H_
 
 class Vec2f;
-class Vec4f;
+class Quaternion;
 
 class Vec3f
 {
@@ -63,7 +63,7 @@ public:
   Vec3f
   Reflect( const Vec3f& normal ) const;
   Vec3f
-  Rotate( const Vec4f& quaternion ) const;
+  Rotate( const Quaternion& quaternion ) const;
   Vec3f
   Rotate( const Vec3f& Axis, const float Angle ) const;
   Vec3f
@@ -203,7 +203,7 @@ public:
 
 protected:
 private:
-  float m_Values[ 3 ];
+  float m_Values[ 4 ];
 
 };
 

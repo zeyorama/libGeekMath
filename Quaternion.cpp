@@ -15,13 +15,13 @@
  misrepresented as being the original software.
  3. This notice may not be removed or altered from any source distribution.
 
- \file Vec4f.cpp
+ \file Quaternion.cpp
 
- Created on: Feb 19, 2015
+ Created on: Mar 9, 2015
  \author     fkzey
  */
 
-#include "Vec4f.h"
+#include "Quaternion.h"
 
 #include "Vec2f.h"
 #include "Vec3f.h"
@@ -31,7 +31,56 @@
 #include <cstdio>
 #include <cstring>
 
-Vec4f::Vec4f( const Vec2f& vector )
+Quaternion::Quaternion( const Mat4f& matrix )
+{
+  const float trace = matrix[ 0 ][ 0 ] + matrix[ 1 ][ 1 ] + matrix[ 2 ][ 2 ];
+
+  if      ( trace > 0 )
+  {
+    const float s = 0.5f / sqrtf( trace + 1.0f );
+
+    m_Values[ 3 ] = 0.25f / s;
+    m_Values[ 0 ] = ( matrix[ 1 ][ 2 ] - matrix[ 2 ][ 1 ] ) * s;
+    m_Values[ 1 ] = ( matrix[ 2 ][ 0 ] - matrix[ 0 ][ 2 ] ) * s;
+    m_Values[ 2 ] = ( matrix[ 0 ][ 1 ] - matrix[ 1 ][ 0 ] ) * s;
+  }
+  else if ( matrix[ 0 ][ 0 ] > matrix[ 1 ][ 1 ] && matrix[ 0 ][ 0 ] > matrix[ 2 ][ 2 ] )
+  {
+    const float s = 2.0f * sqrtf( 1.0f + matrix[ 0 ][ 0 ] - matrix[ 1 ][ 1 ] - matrix[ 2 ][ 2 ] );
+
+    m_Values[ 3 ] = ( matrix[ 1 ][ 2 ] - matrix[ 2 ][ 1 ] ) / s;
+    m_Values[ 0 ] = 0.25f * s;
+    m_Values[ 1 ] = ( matrix[ 1 ][ 0 ] + matrix[ 0 ][ 1 ] ) / s;
+    m_Values[ 2 ] = ( matrix[ 2 ][ 0 ] + matrix[ 0 ][ 2 ] ) / s;
+  }
+  else if ( matrix[ 1 ][ 1 ] > matrix[ 2 ][ 2 ])
+  {
+    const float s = 2.0f * sqrtf( 1.0f + matrix[ 1 ][ 1 ] - matrix[ 0 ][ 0 ] - matrix[ 2 ][ 2 ] );
+
+    m_Values[ 3 ] = ( matrix[ 2 ][ 0 ] - matrix[ 0 ][ 2 ] ) / s;
+    m_Values[ 0 ] = ( matrix[ 1 ][ 0 ] + matrix[ 0 ][ 1 ] ) / s;
+    m_Values[ 1 ] = 0.25f * s;
+    m_Values[ 2 ] = ( matrix[ 2 ][ 1 ] + matrix[ 1 ][ 2 ] ) / s;
+  }
+  else
+  {
+    const float s = 2.0f * sqrtf( 1.0f + matrix[ 2 ][ 2 ] - matrix[ 1 ][ 1 ] - matrix[ 0 ][ 0 ]);
+
+    m_Values[ 3 ] = ( matrix[ 0 ][ 1 ] - matrix[ 1 ][ 0 ] ) / s;
+    m_Values[ 0 ] = ( matrix[ 2 ][ 0 ] + matrix[ 0 ][ 2 ] ) / s;
+    m_Values[ 1 ] = ( matrix[ 1 ][ 2 ] + matrix[ 2 ][ 1 ] ) / s;
+    m_Values[ 2 ] = 0.25f * s;
+  }
+
+  const float length = Length();
+
+  m_Values[ 3 ] = m_Values[ 3 ] / length;
+  m_Values[ 0 ] = m_Values[ 0 ] / length;
+  m_Values[ 1 ] = m_Values[ 1 ] / length;
+  m_Values[ 2 ] = m_Values[ 2 ] / length;
+}
+
+Quaternion::Quaternion( const Vec2f& vector )
 {
   m_Values[ 0 ] = vector.X();
   m_Values[ 1 ] = vector.Y();
@@ -39,7 +88,7 @@ Vec4f::Vec4f( const Vec2f& vector )
   m_Values[ 3 ] = 1.0f;
 }
 
-Vec4f::Vec4f( const Vec3f& vector )
+Quaternion::Quaternion( const Vec3f& vector )
 {
   m_Values[ 0 ] = vector.X();
   m_Values[ 1 ] = vector.Y();
@@ -47,7 +96,7 @@ Vec4f::Vec4f( const Vec3f& vector )
   m_Values[ 3 ] = 1.0f;
 }
 
-Vec4f::Vec4f( const Vec4f& vector )
+Quaternion::Quaternion( const Quaternion& vector )
 {
   m_Values[ 0 ] = vector.m_Values[ 0 ];
   m_Values[ 1 ] = vector.m_Values[ 1 ];
@@ -55,7 +104,18 @@ Vec4f::Vec4f( const Vec4f& vector )
   m_Values[ 3 ] = vector.m_Values[ 3 ];
 }
 
-Vec4f::Vec4f( const float x, const float y, const float z, const float w )
+Quaternion::Quaternion( const Vec3f& Axis, const float Angle )
+{
+  float sinHalfAngle = sinf( Angle / 2 );
+  float cosHalfAngle = cosf( Angle / 2 );
+
+  m_Values[0] = Axis.X() * sinHalfAngle;
+  m_Values[1] = Axis.Y() * sinHalfAngle;
+  m_Values[2] = Axis.Z() * sinHalfAngle;
+  m_Values[3] = cosHalfAngle;
+}
+
+Quaternion::Quaternion( const float x, const float y, const float z, const float w )
 {
   m_Values[ 0 ] = x;
   m_Values[ 1 ] = y;
@@ -63,10 +123,10 @@ Vec4f::Vec4f( const float x, const float y, const float z, const float w )
   m_Values[ 3 ] = w;
 }
 
-Vec4f::~Vec4f( void ) { return; }
+Quaternion::~Quaternion( void ) { return; }
 
 void
-Vec4f::Set( const float& x, const float& y, const float& z, const float& w )
+Quaternion::Set( const float& x, const float& y, const float& z, const float& w )
 {
   m_Values[ 0 ] = x;
   m_Values[ 1 ] = y;
@@ -75,37 +135,37 @@ Vec4f::Set( const float& x, const float& y, const float& z, const float& w )
 }
 
 void
-Vec4f::X( const float& x )
+Quaternion::X( const float& x )
 {
   m_Values[ 0 ] = x;
 }
 
 void
-Vec4f::Y( const float& y )
+Quaternion::Y( const float& y )
 {
   m_Values[ 1 ] = y;
 }
 
 void
-Vec4f::Z( const float& z )
+Quaternion::Z( const float& z )
 {
   m_Values[ 2 ] = z;
 }
 
 void
-Vec4f::W( const float& w )
+Quaternion::W( const float& w )
 {
   m_Values[ 3 ] = w;
 }
 
 float
-Vec4f::Length( void ) const
+Quaternion::Length( void ) const
 {
   return sqrtf( LengthSq() );
 }
 
 float
-Vec4f::LengthSq( void ) const
+Quaternion::LengthSq( void ) const
 {
   return  m_Values[ 0 ] * m_Values[ 0 ] +
           m_Values[ 1 ] * m_Values[ 1 ] +
@@ -114,7 +174,7 @@ Vec4f::LengthSq( void ) const
 }
 
 float
-Vec4f::Dot( const Vec4f& other ) const
+Quaternion::Dot( const Quaternion& other ) const
 {
   return  m_Values[ 0 ] * other.m_Values[ 0 ] +
           m_Values[ 1 ] * other.m_Values[ 1 ] +
@@ -123,7 +183,7 @@ Vec4f::Dot( const Vec4f& other ) const
 }
 
 float
-Vec4f::Max( void ) const
+Quaternion::Max( void ) const
 {
   return m_Values[ 0 ] > m_Values[ 1 ] ?
          ( m_Values[ 0 ] < m_Values[ 2 ] ?
@@ -134,7 +194,7 @@ Vec4f::Max( void ) const
 }
 
 float
-Vec4f::Min( void ) const
+Quaternion::Min( void ) const
 {
   return m_Values[ 0 ] < m_Values[ 1 ] ?
          ( m_Values[ 0 ] > m_Values[ 2 ] ?
@@ -144,10 +204,10 @@ Vec4f::Min( void ) const
          m_Values[ 1 ];
 }
 
-Vec4f
-Vec4f::Clamp( const Vec4f& Min, const Vec4f& Max )
+Quaternion
+Quaternion::Clamp( const Quaternion& Min, const Quaternion& Max )
 {
-  Vec4f result;
+  Quaternion result;
 
   if      ( m_Values[ 0 ] < Min.m_Values[ 0 ] )
     result.m_Values[ 0 ] = Min.m_Values[ 0 ];
@@ -180,28 +240,34 @@ Vec4f::Clamp( const Vec4f& Min, const Vec4f& Max )
   return result;
 }
 
-Vec4f
-Vec4f::Normalize( void ) const
+Quaternion
+Quaternion::Conjugate( void ) const
+{
+  return Quaternion( -m_Values[ 0 ], -m_Values[ 1 ], -m_Values[ 2 ], m_Values[ 3 ] );
+}
+
+Quaternion
+Quaternion::Normalize( void ) const
 {
   return (*this)/Length();
 }
 
-Vec4f
-Vec4f::Reflect( const Vec4f& normal ) const
+Quaternion
+Quaternion::Reflect( const Quaternion& normal ) const
 {
   return (*this) - ( normal * ( Dot( normal ) * 2 ) );
 }
 
-Vec4f
-Vec4f::Lerp( const Vec4f& Destination, const float LerpFactor ) const
+Quaternion
+Quaternion::Lerp( const Quaternion& Destination, const float LerpFactor ) const
 {
   return ( Destination - ( *this ) ) * LerpFactor + ( *this );
 }
 
-Vec4f
-Vec4f::NLerp( const Vec4f& Destination, const float LerpFactor, const bool shortestPath ) const
+Quaternion
+Quaternion::NLerp( const Quaternion& Destination, const float LerpFactor, const bool shortestPath ) const
 {
-  Vec4f correctedDest( Destination );
+  Quaternion correctedDest( Destination );
 
   if ( shortestPath && Dot( Destination ) < 0 )
     correctedDest = Destination * -1;
@@ -211,10 +277,10 @@ Vec4f::NLerp( const Vec4f& Destination, const float LerpFactor, const bool short
 
 #define SLERP_EPSILON 1e3
 
-Vec4f
-Vec4f::SLerp( const Vec4f& Destination, const float LerpFactor, const bool shortestPath ) const
+Quaternion
+Quaternion::SLerp( const Quaternion& Destination, const float LerpFactor, const bool shortestPath ) const
 {
-  Vec4f correctedDest( Destination );
+  Quaternion correctedDest( Destination );
   float cos = Dot( Destination );
 
   if ( shortestPath && cos < 0 )
@@ -233,13 +299,49 @@ Vec4f::SLerp( const Vec4f& Destination, const float LerpFactor, const bool short
   float src  = sinf( ( 1.f - LerpFactor ) * angle ) * invSin;
   float dest = sinf( LerpFactor * angle ) * invSin;
 
-  return Vec4f( (*this) * src + correctedDest * dest );
+  return Quaternion( (*this) * src + correctedDest * dest );
 }
 
-Vec4f
-Vec4f::Max( const Vec4f& vector ) const
+Vec3f
+Quaternion::Forward( void ) const
 {
-  return Vec4f(
+  return Vec3f( 0, 0,  1 ).Rotate( *this );
+}
+
+Vec3f
+Quaternion::Backward( void ) const
+{
+  return Vec3f( 0, 0, -1 ).Rotate( *this );
+}
+
+Vec3f
+Quaternion::Left( void ) const
+{
+  return Vec3f( -1, 0, 0 ).Rotate( *this );
+}
+
+Vec3f
+Quaternion::Right( void ) const
+{
+  return Vec3f(  1, 0, 0 ).Rotate( *this );
+}
+
+Vec3f
+Quaternion::Up( void ) const
+{
+  return Vec3f( 0,  1, 0 ).Rotate( *this );
+}
+
+Vec3f
+Quaternion::Down( void ) const
+{
+  return Vec3f( 0, -1, 0 ).Rotate( *this );
+}
+
+Quaternion
+Quaternion::Max( const Quaternion& vector ) const
+{
+  return Quaternion(
       m_Values[ 0 ] > vector.m_Values[ 0 ] ? m_Values[ 0 ] : vector.m_Values[ 0 ],
       m_Values[ 1 ] > vector.m_Values[ 1 ] ? m_Values[ 1 ] : vector.m_Values[ 1 ],
       m_Values[ 2 ] > vector.m_Values[ 2 ] ? m_Values[ 2 ] : vector.m_Values[ 2 ],
@@ -247,10 +349,10 @@ Vec4f::Max( const Vec4f& vector ) const
   );
 }
 
-Vec4f
-Vec4f::Min( const Vec4f& vector ) const
+Quaternion
+Quaternion::Min( const Quaternion& vector ) const
 {
-  return Vec4f(
+  return Quaternion(
       m_Values[ 0 ] < vector.m_Values[ 0 ] ? m_Values[ 0 ] : vector.m_Values[ 0 ],
       m_Values[ 1 ] < vector.m_Values[ 1 ] ? m_Values[ 1 ] : vector.m_Values[ 1 ],
       m_Values[ 2 ] < vector.m_Values[ 2 ] ? m_Values[ 2 ] : vector.m_Values[ 2 ],
@@ -258,10 +360,16 @@ Vec4f::Min( const Vec4f& vector ) const
   );
 }
 
-Vec4f
-Vec4f::operator +( const float summand ) const
+Mat4f
+Quaternion::RotationMatrix( void ) const
 {
-  return Vec4f(
+  return Mat4f().Rotation( *this );
+}
+
+Quaternion
+Quaternion::operator +( const float summand ) const
+{
+  return Quaternion(
     m_Values[ 0 ] + summand,
     m_Values[ 1 ] + summand,
     m_Values[ 2 ] + summand,
@@ -269,10 +377,10 @@ Vec4f::operator +( const float summand ) const
   );
 }
 
-Vec4f
-Vec4f::operator +( const Vec4f& summand ) const
+Quaternion
+Quaternion::operator +( const Quaternion& summand ) const
 {
-  return Vec4f(
+  return Quaternion(
     m_Values[ 0 ] + summand.m_Values[ 0 ],
     m_Values[ 1 ] + summand.m_Values[ 1 ],
     m_Values[ 2 ] + summand.m_Values[ 2 ],
@@ -280,10 +388,10 @@ Vec4f::operator +( const Vec4f& summand ) const
   );
 }
 
-Vec4f
-Vec4f::operator -( const float subtrahend ) const
+Quaternion
+Quaternion::operator -( const float subtrahend ) const
 {
-  return Vec4f(
+  return Quaternion(
     m_Values[ 0 ] - subtrahend,
     m_Values[ 1 ] - subtrahend,
     m_Values[ 2 ] - subtrahend,
@@ -291,10 +399,10 @@ Vec4f::operator -( const float subtrahend ) const
   );
 }
 
-Vec4f
-Vec4f::operator -( const Vec4f& subtrahend ) const
+Quaternion
+Quaternion::operator -( const Quaternion& subtrahend ) const
 {
-  return Vec4f(
+  return Quaternion(
     m_Values[ 0 ] - subtrahend.m_Values[ 0 ],
     m_Values[ 1 ] - subtrahend.m_Values[ 1 ],
     m_Values[ 2 ] - subtrahend.m_Values[ 2 ],
@@ -302,10 +410,10 @@ Vec4f::operator -( const Vec4f& subtrahend ) const
   );
 }
 
-Vec4f
-Vec4f::operator *( const float factor ) const
+Quaternion
+Quaternion::operator *( const float factor ) const
 {
-  return Vec4f(
+  return Quaternion(
     m_Values[ 0 ] * factor,
     m_Values[ 1 ] * factor,
     m_Values[ 2 ] * factor,
@@ -313,10 +421,21 @@ Vec4f::operator *( const float factor ) const
   );
 }
 
-Vec4f
-Vec4f::operator *( const Vec4f& factor ) const
+Quaternion
+Quaternion::operator *( const Vec3f& factor ) const
 {
-  return Vec4f(
+  return Quaternion(
+     (m_Values[3] * factor[0]) + (m_Values[1] * factor[2]) - (m_Values[2] * factor[1]),
+     (m_Values[3] * factor[1]) + (m_Values[2] * factor[0]) - (m_Values[0] * factor[2]),
+     (m_Values[3] * factor[2]) + (m_Values[0] * factor[1]) - (m_Values[1] * factor[0]),
+    -(m_Values[0] * factor[0]) - (m_Values[1] * factor[1]) - (m_Values[2] * factor[2])
+  );
+}
+
+Quaternion
+Quaternion::operator *( const Quaternion& factor ) const
+{
+  return Quaternion(
     m_Values[ 0 ] * factor.m_Values[ 0 ],
     m_Values[ 1 ] * factor.m_Values[ 1 ],
     m_Values[ 2 ] * factor.m_Values[ 2 ],
@@ -324,12 +443,12 @@ Vec4f::operator *( const Vec4f& factor ) const
   );
 }
 
-Vec4f
-Vec4f::operator /( const float dividend ) const
+Quaternion
+Quaternion::operator /( const float dividend ) const
 {
-  if ( dividend == 0.0f ) return Vec4f();
+  if ( dividend == 0.0f ) return Quaternion();
 
-  return Vec4f(
+  return Quaternion(
     m_Values[ 0 ] / dividend,
     m_Values[ 1 ] / dividend,
     m_Values[ 2 ] / dividend,
@@ -337,8 +456,8 @@ Vec4f::operator /( const float dividend ) const
   );
 }
 
-Vec4f&
-Vec4f::operator +=( const Vec4f& summand )
+Quaternion&
+Quaternion::operator +=( const Quaternion& summand )
 {
   m_Values[ 0 ] += summand.m_Values[ 0 ];
   m_Values[ 1 ] += summand.m_Values[ 1 ];
@@ -348,8 +467,8 @@ Vec4f::operator +=( const Vec4f& summand )
   return *this;
 }
 
-Vec4f&
-Vec4f::operator +=( const float summand )
+Quaternion&
+Quaternion::operator +=( const float summand )
 {
   m_Values[ 0 ] += summand;
   m_Values[ 1 ] += summand;
@@ -359,8 +478,8 @@ Vec4f::operator +=( const float summand )
   return *this;
 }
 
-Vec4f&
-Vec4f::operator -=( const Vec4f& subtrahend )
+Quaternion&
+Quaternion::operator -=( const Quaternion& subtrahend )
 {
   m_Values[ 0 ] -= subtrahend.m_Values[ 0 ];
   m_Values[ 1 ] -= subtrahend.m_Values[ 1 ];
@@ -370,8 +489,8 @@ Vec4f::operator -=( const Vec4f& subtrahend )
   return *this;
 }
 
-Vec4f&
-Vec4f::operator -=( const float subtrahend )
+Quaternion&
+Quaternion::operator -=( const float subtrahend )
 {
   m_Values[ 0 ] -= subtrahend;
   m_Values[ 1 ] -= subtrahend;
@@ -381,8 +500,8 @@ Vec4f::operator -=( const float subtrahend )
   return *this;
 }
 
-Vec4f&
-Vec4f::operator *=( const float factor )
+Quaternion&
+Quaternion::operator *=( const float factor )
 {
   m_Values[ 0 ] *= factor;
   m_Values[ 1 ] *= factor;
@@ -392,8 +511,18 @@ Vec4f::operator *=( const float factor )
   return *this;
 }
 
-Vec4f&
-Vec4f::operator *=( const Vec4f& factor )
+Quaternion&
+Quaternion::operator *=( const Vec3f& factor )
+{
+  Quaternion vec = (*this) * factor;
+
+  memcpy( m_Values, vec.m_Values, sizeof( float ) * 4 );
+
+  return *this;
+}
+
+Quaternion&
+Quaternion::operator *=( const Quaternion& factor )
 {
   m_Values[ 0 ] *= factor.m_Values[ 0 ];
   m_Values[ 1 ] *= factor.m_Values[ 1 ];
@@ -403,8 +532,8 @@ Vec4f::operator *=( const Vec4f& factor )
   return *this;
 }
 
-Vec4f&
-Vec4f::operator /=( const float dividend )
+Quaternion&
+Quaternion::operator /=( const float dividend )
 {
   if ( dividend == 0.0f ) return *this;
 
@@ -417,7 +546,7 @@ Vec4f::operator /=( const float dividend )
 }
 
 bool
-Vec4f::operator ==( const Vec4f& expr ) const
+Quaternion::operator ==( const Quaternion& expr ) const
 {
   return  m_Values[ 0 ] == expr.m_Values[ 0 ] &&
           m_Values[ 1 ] == expr.m_Values[ 1 ] &&
@@ -426,7 +555,7 @@ Vec4f::operator ==( const Vec4f& expr ) const
 }
 
 bool
-Vec4f::operator !=( const Vec4f& expr ) const
+Quaternion::operator !=( const Quaternion& expr ) const
 {
   return  m_Values[ 0 ] != expr.m_Values[ 0 ] ||
           m_Values[ 1 ] != expr.m_Values[ 1 ] ||
@@ -435,529 +564,529 @@ Vec4f::operator !=( const Vec4f& expr ) const
 }
 
 float&
-Vec4f::operator []( unsigned int i )
+Quaternion::operator []( unsigned int i )
 {
   return m_Values[ i ];
 }
 
 float
-Vec4f::operator []( unsigned int i ) const
+Quaternion::operator []( unsigned int i ) const
 {
   return m_Values[ i ];
 }
 
 float
-Vec4f::X( void ) const
+Quaternion::X( void ) const
 {
   return m_Values[ 0 ];
 }
 
 float
-Vec4f::Y( void ) const
+Quaternion::Y( void ) const
 {
   return m_Values[ 1 ];
 }
 
 float
-Vec4f::Z( void ) const
+Quaternion::Z( void ) const
 {
   return m_Values[ 2 ];
 }
 float
-Vec4f::W( void ) const
+Quaternion::W( void ) const
 {
   return m_Values[ 3 ];
 }
 
 Vec2f
-Vec4f::XX( void ) const
+Quaternion::XX( void ) const
 {
   return Vec2f( m_Values[ 0 ], m_Values[ 0 ] );
 }
 
 Vec2f
-Vec4f::XY( void ) const
+Quaternion::XY( void ) const
 {
   return Vec2f( m_Values[ 0 ], m_Values[ 0 ] );
 }
 
 Vec2f
-Vec4f::XZ( void ) const
+Quaternion::XZ( void ) const
 {
   return Vec2f( m_Values[ 0 ], m_Values[ 0 ] );
 }
 
 Vec2f
-Vec4f::XW( void ) const
+Quaternion::XW( void ) const
 {
   return Vec2f( m_Values[ 0 ], m_Values[ 0 ] );
 }
 
 Vec2f
-Vec4f::YX( void ) const
+Quaternion::YX( void ) const
 {
   return Vec2f( m_Values[ 1 ], m_Values[ 0 ] );
 }
 
 Vec2f
-Vec4f::YY( void ) const
+Quaternion::YY( void ) const
 {
   return Vec2f( m_Values[ 1 ], m_Values[ 1 ] );
 }
 
 Vec2f
-Vec4f::YZ( void ) const
+Quaternion::YZ( void ) const
 {
   return Vec2f( m_Values[ 1 ], m_Values[ 2 ] );
 }
 
 Vec2f
-Vec4f::YW( void ) const
+Quaternion::YW( void ) const
 {
   return Vec2f( m_Values[ 1 ], m_Values[ 3 ] );
 }
 
 Vec2f
-Vec4f::ZX( void ) const
+Quaternion::ZX( void ) const
 {
   return Vec2f( m_Values[ 2 ], m_Values[ 0 ] );
 }
 
 Vec2f
-Vec4f::ZY( void ) const
+Quaternion::ZY( void ) const
 {
   return Vec2f( m_Values[ 2 ], m_Values[ 1 ] );
 }
 
 Vec2f
-Vec4f::ZZ( void ) const
+Quaternion::ZZ( void ) const
 {
   return Vec2f( m_Values[ 2 ], m_Values[ 2 ] );
 }
 
 Vec2f
-Vec4f::ZW( void ) const
+Quaternion::ZW( void ) const
 {
   return Vec2f( m_Values[ 2 ], m_Values[ 3 ] );
 }
 
 Vec2f
-Vec4f::WX( void ) const
+Quaternion::WX( void ) const
 {
   return Vec2f( m_Values[ 3 ], m_Values[ 0 ] );
 }
 
 Vec2f
-Vec4f::WY( void ) const
+Quaternion::WY( void ) const
 {
   return Vec2f( m_Values[ 3 ], m_Values[ 1 ] );
 }
 
 Vec2f
-Vec4f::WZ( void ) const
+Quaternion::WZ( void ) const
 {
   return Vec2f( m_Values[ 3 ], m_Values[ 2 ] );
 }
 
 Vec2f
-Vec4f::WW( void ) const
+Quaternion::WW( void ) const
 {
   return Vec2f( m_Values[ 3 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::XXX( void ) const
+Quaternion::XXX( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 0 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::XXY( void ) const
+Quaternion::XXY( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 0 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::XXZ( void ) const
+Quaternion::XXZ( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 0 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::XXW( void ) const
+Quaternion::XXW( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 0 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::XYX( void ) const
+Quaternion::XYX( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 1 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::XYY( void ) const
+Quaternion::XYY( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 1 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::XYZ( void ) const
+Quaternion::XYZ( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 1 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::XYW( void ) const
+Quaternion::XYW( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 1 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::XZX( void ) const
+Quaternion::XZX( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 2 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::XZY( void ) const
+Quaternion::XZY( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 2 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::XZZ( void ) const
+Quaternion::XZZ( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 2 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::XZW( void ) const
+Quaternion::XZW( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 2 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::XWX( void ) const
+Quaternion::XWX( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 3 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::XWY( void ) const
+Quaternion::XWY( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 3 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::XWZ( void ) const
+Quaternion::XWZ( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 3 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::XWW( void ) const
+Quaternion::XWW( void ) const
 {
   return Vec3f( m_Values[ 0 ], m_Values[ 3 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::YXX( void ) const
+Quaternion::YXX( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 0 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::YXY( void ) const
+Quaternion::YXY( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 0 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::YXZ( void ) const
+Quaternion::YXZ( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 0 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::YXW( void ) const
+Quaternion::YXW( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 0 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::YYX( void ) const
+Quaternion::YYX( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 1 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::YYY( void ) const
+Quaternion::YYY( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 1 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::YYZ( void ) const
+Quaternion::YYZ( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 1 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::YYW( void ) const
+Quaternion::YYW( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 1 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::YZX( void ) const
+Quaternion::YZX( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 2 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::YZY( void ) const
+Quaternion::YZY( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 2 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::YZZ( void ) const
+Quaternion::YZZ( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 2 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::YZW( void ) const
+Quaternion::YZW( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 2 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::YWX( void ) const
+Quaternion::YWX( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 3 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::YWY( void ) const
+Quaternion::YWY( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 3 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::YWZ( void ) const
+Quaternion::YWZ( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 3 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::YWW( void ) const
+Quaternion::YWW( void ) const
 {
   return Vec3f( m_Values[ 1 ], m_Values[ 3 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::ZXX( void ) const
+Quaternion::ZXX( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 0 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::ZXY( void ) const
+Quaternion::ZXY( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 0 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::ZXZ( void ) const
+Quaternion::ZXZ( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 0 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::ZXW( void ) const
+Quaternion::ZXW( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 0 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::ZYX( void ) const
+Quaternion::ZYX( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 1 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::ZYY( void ) const
+Quaternion::ZYY( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 1 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::ZYZ( void ) const
+Quaternion::ZYZ( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 1 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::ZYW( void ) const
+Quaternion::ZYW( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 1 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::ZZX( void ) const
+Quaternion::ZZX( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 2 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::ZZY( void ) const
+Quaternion::ZZY( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 2 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::ZZZ( void ) const
+Quaternion::ZZZ( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 2 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::ZZW( void ) const
+Quaternion::ZZW( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 2 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::ZWX( void ) const
+Quaternion::ZWX( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 3 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::ZWY( void ) const
+Quaternion::ZWY( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 3 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::ZWZ( void ) const
+Quaternion::ZWZ( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 3 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::ZWW( void ) const
+Quaternion::ZWW( void ) const
 {
   return Vec3f( m_Values[ 2 ], m_Values[ 3 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::WXX( void ) const
+Quaternion::WXX( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 0 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::WXY( void ) const
+Quaternion::WXY( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 0 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::WXZ( void ) const
+Quaternion::WXZ( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 0 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::WXW( void ) const
+Quaternion::WXW( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 0 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::WYX( void ) const
+Quaternion::WYX( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 1 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::WYY( void ) const
+Quaternion::WYY( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 1 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::WYZ( void ) const
+Quaternion::WYZ( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 1 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::WYW( void ) const
+Quaternion::WYW( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 1 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::WZX( void ) const
+Quaternion::WZX( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 2 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::WZY( void ) const
+Quaternion::WZY( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 2 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::WZZ( void ) const
+Quaternion::WZZ( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 2 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::WZW( void ) const
+Quaternion::WZW( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 2 ], m_Values[ 3 ] );
 }
 
 Vec3f
-Vec4f::WWX( void ) const
+Quaternion::WWX( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 3 ], m_Values[ 0 ] );
 }
 
 Vec3f
-Vec4f::WWY( void ) const
+Quaternion::WWY( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 3 ], m_Values[ 1 ] );
 }
 
 Vec3f
-Vec4f::WWZ( void ) const
+Quaternion::WWZ( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 3 ], m_Values[ 2 ] );
 }
 
 Vec3f
-Vec4f::WWW( void ) const
+Quaternion::WWW( void ) const
 {
   return Vec3f( m_Values[ 3 ], m_Values[ 3 ], m_Values[ 3 ] );
 }
 
 void
-Vec4f::Print( void ) const
+Quaternion::Print( void ) const
 {
   printf( "( %f | %f | %f | %f )\n",
           m_Values[ 0 ], m_Values[ 1 ], m_Values[ 2 ], m_Values[ 3 ] );
 }
 
 float*
-Vec4f::Values( void )
+Quaternion::Values( void )
 {
   return m_Values;
 }

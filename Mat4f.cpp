@@ -25,13 +25,12 @@
 
 #include "Vec2f.h"
 #include "Vec3f.h"
-#include "Vec4f.h"
-
-#include "ZeyoMathConstants.h"
+#include "Quaternion.h"
 
 #include <cmath>
 #include <cstdio>
 #include <cstring>
+#include "GeekMathConstants.h"
 
 static const unsigned int MATRIX_SIZE = sizeof( float ) * 16;
 
@@ -70,7 +69,7 @@ Mat4f::Identity( void )
 }
 
 Mat4f
-Mat4f::Rotation( const Vec4f& quaternion )
+Mat4f::Rotation( const Quaternion& quaternion )
 {
   Vec3f f = Vec3f(        2.0f * (quaternion.X() * quaternion.Z() - quaternion.W() * quaternion.Y()),
                           2.0f * (quaternion.Y() * quaternion.Z() + quaternion.W() * quaternion.X()),
@@ -139,17 +138,15 @@ Mat4f::Rotation( const Vec3f& n, const Vec3f& v, const Vec3f& u )
 }
 
 Vec3f
-Mat4f::Transform( const Vec3f& vector )
+Mat4f::Transformation( const Vec3f& vector ) const
 {
-  Vec4f r2( vector );
-
-  return ( Transform( Vec4f( vector ) ) ).XYZ();
+  return ( Transformation( Quaternion( vector ) ) ).XYZ();
 }
 
-Vec4f
-Mat4f::Transform( const Vec4f& vector )
+Quaternion
+Mat4f::Transformation( const Quaternion& vector ) const
 {
-  Vec4f result( 0, 0, 0, 0 );
+  Quaternion result( 0, 0, 0, 0 );
 
   for(unsigned int i = 0; i < 4; i++)
     for(unsigned int j = 0; j < 4; j++)

@@ -125,7 +125,7 @@ public:
 
 protected:
 private:
-  float m_Values[ 2 ];
+  float m_Values[ 4 ];
 
 };
 

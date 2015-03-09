@@ -28,6 +28,7 @@ Created on: Feb 19, 2015
 #include "Vec2f.h"
 #include "Vec3f.h"
 #include "Vec4f.h"
+#include "Quaternion.h"
 
 #include "Mat4f.h"
 

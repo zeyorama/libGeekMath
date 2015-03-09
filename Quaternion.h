@@ -15,27 +15,31 @@
  misrepresented as being the original software.
  3. This notice may not be removed or altered from any source distribution.
 
- \file Vec4f.h
+ \file Quaternion.h
 
- Created on: Feb 19, 2015
+ Created on: Mar 9, 2015
  \author     fkzey
  */
-#ifndef VEC4F_H_
-#define VEC4F_H_
 
+#ifndef LIBGEEKMATH_QUATERNION_H_
+#define LIBGEEKMATH_QUATERNION_H_
+
+class Mat4f;
 class Vec2f;
 class Vec3f;
-class Mat4f;
+class Vec4f;
 
-class Vec4f
+class Quaternion
 {
 public:
-  Vec4f( const Vec2f& vector );
-  Vec4f( const Vec3f& vector );
-  Vec4f( const Vec4f& vector );
-  Vec4f( const float x = 0.0f, const float y = 0.0f, const float z = 0.0f, const float w = 1.0f );
+  Quaternion( const Mat4f& matrix );
+  Quaternion( const Vec2f& vector );
+  Quaternion( const Vec3f& vector );
+  Quaternion( const Quaternion& vector );
+  Quaternion( const Vec3f& Axis, const float Angle );
+  Quaternion( const float x = 0.0f, const float y = 0.0f, const float z = 0.0f, const float w = 1.0f );
   virtual
-  ~Vec4f( void );
+  ~Quaternion( void );
 
   void
   Set( const float& x, const float& y, const float& z, const float& w );
@@ -53,62 +57,84 @@ public:
   float
   LengthSq( void ) const;
   float
-  Dot( const Vec4f& other ) const;
+  Dot( const Quaternion& other ) const;
   float
   Max( void ) const;
   float
   Min( void ) const;
 
-  Vec4f
-  Clamp( const Vec4f& Min, const Vec4f& Max );
-  Vec4f
-  Normalize( void ) const;
-  Vec4f
-  Reflect( const Vec4f& normal ) const;
-  Vec4f
-  Lerp( const Vec4f& Destination, const float LerpFactor ) const;
-  Vec4f
-  NLerp( const Vec4f& Destination, const float LerpFactor, const bool shortestPath ) const;
-  Vec4f
-  SLerp( const Vec4f& Destination, const float LerpFactor, const bool shortestPath ) const;
-  Vec4f
-  Max( const Vec4f& vector ) const;
-  Vec4f
-  Min( const Vec4f& vector ) const;
+  Vec3f
+  Forward( void ) const;
+  Vec3f
+  Backward( void ) const;
+  Vec3f
+  Left( void ) const;
+  Vec3f
+  Right( void ) const;
+  Vec3f
+  Up( void ) const;
+  Vec3f
+  Down( void ) const;
 
-  Vec4f
+  Quaternion
+  Clamp( const Quaternion& Min, const Quaternion& Max );
+  Quaternion
+  Conjugate( void ) const;
+  Quaternion
+  Normalize( void ) const;
+  Quaternion
+  Reflect( const Quaternion& normal ) const;
+  Quaternion
+  Lerp( const Quaternion& Destination, const float LerpFactor ) const;
+  Quaternion
+  NLerp( const Quaternion& Destination, const float LerpFactor, const bool shortestPath ) const;
+  Quaternion
+  SLerp( const Quaternion& Destination, const float LerpFactor, const bool shortestPath ) const;
+  Quaternion
+  Max( const Quaternion& vector ) const;
+  Quaternion
+  Min( const Quaternion& vector ) const;
+
+  Mat4f
+  RotationMatrix( void ) const;
+
+  Quaternion
   operator +( const float summand ) const;
-  Vec4f
-  operator +( const Vec4f& summand ) const;
-  Vec4f
+  Quaternion
+  operator +( const Quaternion& summand ) const;
+  Quaternion
   operator -( const float subtrahend ) const;
-  Vec4f
-  operator -( const Vec4f& subtrahend ) const;
-  Vec4f
+  Quaternion
+  operator -( const Quaternion& subtrahend ) const;
+  Quaternion
   operator *( const float factor ) const;
-  Vec4f
-  operator *( const Vec4f& factor ) const;
-  Vec4f
+  Quaternion
+  operator *( const Vec3f& factor ) const;
+  Quaternion
+  operator *( const Quaternion& factor ) const;
+  Quaternion
   operator /( const float dividend ) const;
-  Vec4f&
-  operator +=( const Vec4f& summand );
-  Vec4f&
+  Quaternion&
+  operator +=( const Quaternion& summand );
+  Quaternion&
   operator +=( const float summand );
-  Vec4f&
-  operator -=( const Vec4f& subtrahend );
-  Vec4f&
+  Quaternion&
+  operator -=( const Quaternion& subtrahend );
+  Quaternion&
   operator -=( const float subtrahend );
-  Vec4f&
+  Quaternion&
   operator *=( const float factor );
-  Vec4f&
-  operator *=( const Vec4f& factor );
-  Vec4f&
+  Quaternion&
+  operator *=( const Vec3f& factor );
+  Quaternion&
+  operator *=( const Quaternion& factor );
+  Quaternion&
   operator /=( const float dividend );
 
   bool
-  operator ==( const Vec4f& expr ) const;
+  operator ==( const Quaternion& expr ) const;
   bool
-  operator !=( const Vec4f& expr ) const;
+  operator !=( const Quaternion& expr ) const;
 
   float&
   operator []( unsigned int i );
@@ -297,4 +323,4 @@ private:
   float m_Values[ 4 ];
 };
 
-#endif /* VEC4F_H_ */
+#endif /* LIBGEEKMATH_QUATERNION_H_ */
