@@ -26,11 +26,11 @@
 #include "Vec2f.h"
 #include "Vec3f.h"
 #include "Quaternion.h"
+#include "../GeekMathConstants.h"
 
 #include <cmath>
 #include <cstdio>
 #include <cstring>
-#include "GeekMathConstants.h"
 
 static const unsigned int MATRIX_SIZE = sizeof( float ) * 16;
 

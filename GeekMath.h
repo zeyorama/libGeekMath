@@ -21,10 +21,9 @@ Created on: Feb 19, 2015
 \author     fkzey
 */
 
-#ifndef ZEYOMATH_H_
-#define ZEYOMATH_H_
+#ifndef GEEKMATH_H_
+#define GEEKMATH_H_
 
-#include "Math/GeekMathConstants.h"
 #include "Math/Vec2f.h"
 #include "Math/Vec3f.h"
 #include "Math/Vec4f.h"
@@ -32,4 +31,6 @@ Created on: Feb 19, 2015
 
 #include "Math/Mat4f.h"
 
-#endif /* ZEYOMATH_H_ */
+#include "GeekMathConstants.h"
+
+#endif /* GEEKMATH_H_ */
