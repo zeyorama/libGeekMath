@@ -24,12 +24,12 @@ Created on: Feb 19, 2015
 #ifndef ZEYOMATH_H_
 #define ZEYOMATH_H_
 
-#include "GeekMathConstants.h"
-#include "Vec2f.h"
-#include "Vec3f.h"
-#include "Vec4f.h"
-#include "Quaternion.h"
+#include "Math/GeekMathConstants.h"
+#include "Math/Vec2f.h"
+#include "Math/Vec3f.h"
+#include "Math/Vec4f.h"
+#include "Math/Quaternion.h"
 
-#include "Mat4f.h"
+#include "Math/Mat4f.h"
 
 #endif /* ZEYOMATH_H_ */
