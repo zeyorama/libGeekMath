@@ -249,8 +249,8 @@ Mat4f::operator []( unsigned int row ) const
   return m_Values[ row ];
 }
 
-float*
-Mat4f::Values( void )
+const float*
+Mat4f::Values( void ) const
 {
   return *m_Values;
 }

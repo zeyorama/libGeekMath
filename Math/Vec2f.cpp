@@ -341,8 +341,8 @@ Vec2f::Print( void ) const
   printf( "( %f | %f )\n", m_Values[ 0 ], m_Values[ 1 ] );
 }
 
-float*
-Vec2f::Values( void )
+const float*
+Vec2f::Values( void ) const
 {
   return m_Values;
 }

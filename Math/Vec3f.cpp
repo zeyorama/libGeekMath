@@ -619,8 +619,8 @@ Vec3f::Print( void ) const
   printf( "( %f | %f | %f )\n", m_Values[ 0 ], m_Values[ 1 ], m_Values[ 2 ] );
 }
 
-float*
-Vec3f::Values( void )
+const float*
+Vec3f::Values( void ) const
 {
   return m_Values;
 }

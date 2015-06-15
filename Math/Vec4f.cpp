@@ -956,8 +956,8 @@ Vec4f::Print( void ) const
           m_Values[ 0 ], m_Values[ 1 ], m_Values[ 2 ], m_Values[ 3 ] );
 }
 
-float*
-Vec4f::Values( void )
+const float*
+Vec4f::Values( void ) const
 {
   return m_Values;
 }

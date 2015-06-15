@@ -73,8 +73,8 @@ public:
   const float*
   operator []( unsigned int row ) const;
 
-  float*
-  Values( void );
+  const float*
+  Values( void ) const;
 
   void
   Set( const unsigned int row, const unsigned int col, const float value );

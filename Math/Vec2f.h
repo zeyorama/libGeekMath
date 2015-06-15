@@ -120,8 +120,8 @@ public:
   void
   Print( void ) const;
 
-  float*
-  Values( void );
+  const float*
+  Values( void ) const;
 
 protected:
 private:

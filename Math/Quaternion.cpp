@@ -1085,8 +1085,8 @@ Quaternion::Print( void ) const
           m_Values[ 0 ], m_Values[ 1 ], m_Values[ 2 ], m_Values[ 3 ] );
 }
 
-float*
-Quaternion::Values( void )
+const float*
+Quaternion::Values( void ) const
 {
   return m_Values;
 }
