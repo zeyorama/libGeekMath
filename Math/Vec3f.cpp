@@ -20,14 +20,14 @@ freely, subject to the following restrictions:
 Created on: Feb 18, 2015
 \author     fkzey
 */
-#include "Vec3f.h"
-
-#include "Vec2f.h"
-#include "Quaternion.h"
+#include "Vec3f.hpp"
 
 #include <cmath>
 #include <cstdio>
 #include <cstring>
+
+#include "Quaternion.hpp"
+#include "Vec2f.hpp"
 
 Vec3f::Vec3f( void )
 {

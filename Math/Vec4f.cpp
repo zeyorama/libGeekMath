@@ -21,15 +21,15 @@
  \author     fkzey
  */
 
-#include "Vec4f.h"
-
-#include "Vec2f.h"
-#include "Vec3f.h"
-#include "Mat4f.h"
+#include "Vec4f.hpp"
 
 #include <cmath>
 #include <cstdio>
 #include <cstring>
+
+#include "Mat4f.hpp"
+#include "Vec2f.hpp"
+#include "Vec3f.hpp"
 
 Vec4f::Vec4f( const Vec2f& vector )
 {

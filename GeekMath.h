@@ -24,13 +24,14 @@ Created on: Feb 19, 2015
 #ifndef GEEKMATH_H_
 #define GEEKMATH_H_
 
-#include "Math/Vec2f.h"
-#include "Math/Vec3f.h"
-#include "Math/Vec4f.h"
-#include "Math/Quaternion.h"
+#include "Math/Vec2f.hpp"
+#include "Math/Vec3f.hpp"
+#include "Math/Vec4f.hpp"
+#include "Math/Quaternion.hpp"
 
-#include "Math/Mat4f.h"
+#include "Math/Mat3f.hpp"
+#include "Math/Mat4f.hpp"
 
-#include "GeekMathConstants.h"
+#include "GeekMathConstants.hpp"
 
 #endif /* GEEKMATH_H_ */

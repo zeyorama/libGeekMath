@@ -21,15 +21,15 @@
  \author     fkzey
  */
 
-#include "Quaternion.h"
-
-#include "Vec2f.h"
-#include "Vec3f.h"
-#include "Mat4f.h"
+#include "Quaternion.hpp"
 
 #include <cmath>
 #include <cstdio>
 #include <cstring>
+
+#include "Mat4f.hpp"
+#include "Vec2f.hpp"
+#include "Vec3f.hpp"
 
 Quaternion::Quaternion( const Mat4f& matrix )
 {

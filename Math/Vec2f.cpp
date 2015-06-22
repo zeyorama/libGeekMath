@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 Created on: Feb 18, 2015
 \author     fkzey
 */
-#include "Vec2f.h"
+#include "Vec2f.hpp"
 
 #include <cmath>
 #include <cstdio>
