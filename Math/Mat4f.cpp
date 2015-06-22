@@ -237,6 +237,21 @@ Mat4f::operator *( const Mat4f& factor ) const
   return result;
 }
 
+Mat4f&
+Mat4f::operator *=( const Mat4f& factor )
+{
+  Mat4f result;
+
+  for ( unsigned int row = 0 ; row < 4 ; row++ )
+    for ( unsigned int col = 0 ; col < 4; col++ )
+      for( unsigned int trow = 0; trow < 4; trow++ )
+        result.m_Values[ row ][ col ] += m_Values[ trow ][ col ] * factor.m_Values[ row ][ trow ];
+
+  memcpy( m_Values, result.m_Values, MATRIX_SIZE );
+
+  return *this;
+}
+
 float*
 Mat4f::operator []( unsigned int row )
 {
