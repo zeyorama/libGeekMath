@@ -77,6 +77,12 @@ Mat3f::operator []( unsigned int row ) const
   return m_Values[ row ];
 }
 
+const float*
+Mat3f::Values( void ) const
+{
+  return *m_Values;
+}
+
 void
 Mat3f::Print( void ) const
 {

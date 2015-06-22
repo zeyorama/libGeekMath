@@ -49,6 +49,8 @@ public:
   const float*
   operator []( unsigned int row ) const;
 
+  const float*
+  Values( void ) const;
 
   void
   Print( void ) const;
