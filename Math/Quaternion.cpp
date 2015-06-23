@@ -436,10 +436,10 @@ Quaternion
 Quaternion::operator *( const Quaternion& factor ) const
 {
   return Quaternion(
-    m_Values[ 0 ] * factor.m_Values[ 0 ],
-    m_Values[ 1 ] * factor.m_Values[ 1 ],
-    m_Values[ 2 ] * factor.m_Values[ 2 ],
-    m_Values[ 3 ] * factor.m_Values[ 3 ]
+    m_Values[ 0 ] * factor.m_Values[ 3 ] + m_Values[ 3 ] * factor.m_Values[ 0 ] + m_Values[ 1 ] * factor.m_Values[ 2 ] - m_Values[ 2 ] * factor.m_Values[ 1 ],
+    m_Values[ 1 ] * factor.m_Values[ 3 ] + m_Values[ 3 ] * factor.m_Values[ 1 ] + m_Values[ 2 ] * factor.m_Values[ 0 ] - m_Values[ 0 ] * factor.m_Values[ 2 ],
+    m_Values[ 2 ] * factor.m_Values[ 3 ] + m_Values[ 3 ] * factor.m_Values[ 2 ] + m_Values[ 0 ] * factor.m_Values[ 1 ] - m_Values[ 1 ] * factor.m_Values[ 0 ],
+    m_Values[ 3 ] * factor.m_Values[ 3 ] - m_Values[ 0 ] * factor.m_Values[ 0 ] - m_Values[ 1 ] * factor.m_Values[ 1 ] - m_Values[ 2 ] * factor.m_Values[ 2 ]
   );
 }
 
@@ -1081,8 +1081,7 @@ Quaternion::WWW( void ) const
 void
 Quaternion::Print( void ) const
 {
-  printf( "( %f | %f | %f | %f )\n",
-          m_Values[ 0 ], m_Values[ 1 ], m_Values[ 2 ], m_Values[ 3 ] );
+  printf( "( %f | %f | %f | %f )\n", m_Values[ 0 ], m_Values[ 1 ], m_Values[ 2 ], m_Values[ 3 ] );
 }
 
 const float*
