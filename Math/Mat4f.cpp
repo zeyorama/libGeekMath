@@ -181,21 +181,28 @@ Mat4f::Translation( const Vec3f& translation )
   return *this;
 }
 
+float cotanf( float value )
+{
+  return 1.0f / ( value );
+}
+
 Mat4f
 Mat4f::Perspective( const float FoV, const float Aspect, const float zNear, const float zFar )
 {
+  memset( m_Values, 0, 16 );
+
   if ( zNear >= zFar ) throw "ERROR: zNear must be less than zFar.";
 
-  const float zRange        = zNear - zFar;
-  const float invTanHalfFOV = 1.0f / tanf( DEG2RAD( FoV ) / 2.0f );
+  const float zRange  = zNear - zFar;
+  const float f       = cotanf( DEG2RAD( FoV ) / 2.0f );
 
   memset( m_Values, 0.0f, MATRIX_SIZE );
 
-  m_Values[0][0] = invTanHalfFOV / Aspect;
-  m_Values[1][1] = invTanHalfFOV;
-  m_Values[2][2] = -( zNear + zFar ) / zRange;
+  m_Values[0][0] = f / Aspect;
+  m_Values[1][1] = f;
+  m_Values[2][2] = ( zNear + zFar ) / zRange;
+  m_Values[2][3] = -1.0f;
   m_Values[3][2] = 2.0f * zFar * zNear / zRange;
-  m_Values[2][3] = 1.0f;
 
   return *this;
 }
@@ -207,18 +214,18 @@ Mat4f::Orthographic( const float Left, const float Right,
 {
   if ( zNear >= zFar ) throw "ERROR: zNear must be less than zFar.";
 
-  const float width = ( Right - Left );
-  const float height = ( Top - Bottom );
-  const float depth = ( zFar - zNear );
+  const float width   = Right - Left;
+  const float height  = Top - Bottom;
+  const float depth   = zFar - zNear;
 
   memset( m_Values, 0.0f, MATRIX_SIZE );
 
   m_Values[0][0] =  2.0f/width;
-  m_Values[3][0] = -( Right + Left ) / width;
+  m_Values[3][0] = -( ( Right + Left ) / width );
   m_Values[1][1] =  2.0f/height;
-  m_Values[3][1] = -( Top + Bottom ) / height;
+  m_Values[3][1] = -( ( Top + Bottom ) / height );
   m_Values[2][2] = -2.0f/depth;
-  m_Values[3][2] = -( zFar + zNear ) / depth;
+  m_Values[3][2] = -( ( zFar + zNear ) / depth );
   m_Values[3][3] =  1.0f;
 
   return *this;
