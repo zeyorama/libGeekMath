@@ -36,7 +36,9 @@ public:
   ~Mat4f( void );
 
   Mat4f
-  Scale( const Vec3f& scale );
+  Scale( const Vec3f& );
+  Mat4f
+  Scale( const float&, const float&, const float& );
   Mat4f
   Identity( void );
   Mat4f
@@ -54,7 +56,9 @@ public:
   Mat4f
   Transpose( void ) const;
   Mat4f
-  Translation( const Vec3f& translation );
+  Translation( const Vec3f& );
+  Mat4f
+  Translation( const float&, const float&, const float& );
   Mat4f
   Perspective( const float FoV, const float Aspect, const float zNear, const float zFar );
   Mat4f
@@ -63,10 +67,10 @@ public:
                 const float zNear, const float zFar );
 
   Mat4f
-  operator *( const Mat4f& factor ) const;
+  operator *( const Mat4f& ) const;
 
-  Mat4f&
-  operator *=( const Mat4f& factor );
+  Quaternion
+  operator *( const Quaternion& ) const;
 
   float*
   operator []( unsigned int row );

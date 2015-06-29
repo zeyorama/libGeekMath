@@ -49,10 +49,16 @@ Mat4f::~Mat4f( void ) { return; }
 Mat4f
 Mat4f::Scale( const Vec3f& scale )
 {
-  m_Values[ 0 ][ 0 ] = scale.X();
-  m_Values[ 1 ][ 1 ] = scale.Y();
-  m_Values[ 2 ][ 2 ] = scale.Z();
-  m_Values[ 3 ][ 3 ] = 1.0f;
+  return Scale( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
+}
+
+Mat4f
+Mat4f::Scale( const float& x, const float& y, const float& z )
+{
+  m_Values[0][0] = x;    m_Values[0][1] = 0.0f; m_Values[0][2] = 0.0f; m_Values[0][3] = 0.0f;
+  m_Values[1][0] = 0.0f; m_Values[1][1] = y;    m_Values[1][2] = 0.0f; m_Values[1][3] = 0.0f;
+  m_Values[2][0] = 0.0f; m_Values[2][1] = 0.0f; m_Values[2][2] = z;    m_Values[2][3] = 0.0f;
+  m_Values[3][0] = 0.0f; m_Values[3][1] = 0.0f; m_Values[3][2] = 0.0f; m_Values[3][3] = 1.0f;
 
   return *this;
 }
@@ -167,18 +173,22 @@ Mat4f::Transpose( void ) const
   return t;
 }
 
+
 Mat4f
-Mat4f::Translation( const Vec3f& translation )
+Mat4f::Translation( const float& x, const float& y, const float& z )
 {
-  m_Values[ 0 ][ 0 ] = 1.0f;
-  m_Values[ 1 ][ 1 ] = 1.0f;
-  m_Values[ 2 ][ 2 ] = 1.0f;
-  m_Values[ 3 ][ 0 ] = translation.X();
-  m_Values[ 3 ][ 1 ] = translation.Y();
-  m_Values[ 3 ][ 2 ] = translation.Z();
-  m_Values[ 3 ][ 3 ] = 1.0f;
+  m_Values[ 0 ][ 0 ] = 1.0f; m_Values[ 0 ][ 1 ] = 0.0f; m_Values[ 0 ][ 2 ] = 0.0f; m_Values[ 0 ][ 3 ] = x;
+  m_Values[ 1 ][ 0 ] = 0.0f; m_Values[ 1 ][ 1 ] = 1.0f; m_Values[ 1 ][ 2 ] = 0.0f; m_Values[ 1 ][ 3 ] = y;
+  m_Values[ 2 ][ 0 ] = 0.0f; m_Values[ 2 ][ 1 ] = 0.0f; m_Values[ 2 ][ 2 ] = 1.0f; m_Values[ 2 ][ 3 ] = z;
+  m_Values[ 3 ][ 0 ] = 0.0f; m_Values[ 3 ][ 1 ] = 0.0f; m_Values[ 3 ][ 2 ] = 0.0f; m_Values[ 3 ][ 3 ] = 1.0f;
 
   return *this;
+}
+
+Mat4f
+Mat4f::Translation( const Vec3f& t )
+{
+  return Translation( t[ 0 ], t[ 1 ], t[ 2 ] );
 }
 
 float cotanf( float value )
@@ -189,20 +199,19 @@ float cotanf( float value )
 Mat4f
 Mat4f::Perspective( const float FoV, const float Aspect, const float zNear, const float zFar )
 {
-  memset( m_Values, 0, 16 );
-
   if ( zNear >= zFar ) throw "ERROR: zNear must be less than zFar.";
 
-  const float zRange  = zNear - zFar;
-  const float f       = cotanf( DEG2RAD( FoV ) / 2.0f );
+  const float zRange = zFar - zNear;
+  const float alpha  = tanf( DEG2RAD( FoV ) / 2.0f );
+  const float x      = 1.0f / ( alpha  );
+  const float y      = Aspect / alpha;
+  const float z      = ( zFar + zNear ) / zRange;
+  const float tz     = ( 2.0f * zFar * zNear ) / zRange;
 
-  memset( m_Values, 0.0f, MATRIX_SIZE );
-
-  m_Values[0][0] = f / Aspect;
-  m_Values[1][1] = f;
-  m_Values[2][2] = ( zNear + zFar ) / zRange;
-  m_Values[2][3] = -1.0f;
-  m_Values[3][2] = 2.0f * zFar * zNear / zRange;
+  m_Values[0][0] = x;    m_Values[0][1] = 0.0f; m_Values[0][2] = 0.0f; m_Values[0][3] = 0.0f;
+  m_Values[1][0] = 0.0f; m_Values[1][1] = y;    m_Values[1][2] = 0.0f; m_Values[1][3] = 0.0f;
+  m_Values[2][0] = 0.0f; m_Values[2][1] = 0.0f; m_Values[2][2] = z;    m_Values[2][3] = tz;
+  m_Values[3][0] = 0.0f; m_Values[3][1] = 0.0f; m_Values[3][2] = 1.0f; m_Values[3][3] = 0.0f;
 
   return *this;
 }
@@ -218,15 +227,10 @@ Mat4f::Orthographic( const float Left, const float Right,
   const float height  = Top - Bottom;
   const float depth   = zFar - zNear;
 
-  memset( m_Values, 0.0f, MATRIX_SIZE );
-
-  m_Values[0][0] =  2.0f/width;
-  m_Values[3][0] = -( ( Right + Left ) / width );
-  m_Values[1][1] =  2.0f/height;
-  m_Values[3][1] = -( ( Top + Bottom ) / height );
-  m_Values[2][2] = -2.0f/depth;
-  m_Values[3][2] = -( ( zFar + zNear ) / depth );
-  m_Values[3][3] =  1.0f;
+  m_Values[0][0] = 2.0f / width; m_Values[0][1] = 0.0f;          m_Values[0][2] =  0.0f;         m_Values[0][3] = -(Right + Left) / width;
+  m_Values[1][0] = 0.0f;         m_Values[1][1] = 2.0f / height; m_Values[1][2] =  0.0f;         m_Values[1][3] = -(Top + Bottom) / height;
+  m_Values[2][0] = 0.0f;         m_Values[2][1] = 0.0f;          m_Values[2][2] = -2.0f / depth; m_Values[2][3] = -(zFar + zNear) / depth;
+  m_Values[3][0] = 0.0f;         m_Values[3][1] = 0.0f;          m_Values[3][2] =  0.0f;         m_Values[3][3] =  1.0f;
 
   return *this;
 }
@@ -239,24 +243,37 @@ Mat4f::operator *( const Mat4f& factor ) const
   for ( unsigned int row = 0 ; row < 4 ; row++ )
     for ( unsigned int col = 0 ; col < 4; col++ )
       for( unsigned int trow = 0; trow < 4; trow++ )
-        result.m_Values[ row ][ col ] += m_Values[ trow ][ col ] * factor.m_Values[ row ][ trow ];
+        result.m_Values[ row ][ col ] += m_Values[ row ][ trow ] * factor.m_Values[ trow ][ col ];
 
   return result;
 }
 
-Mat4f&
-Mat4f::operator *=( const Mat4f& factor )
+//Mat4f
+//Mat4f::operator *( const Mat4f& other ) const
+//{
+//  Mat4f ret;
+//
+//  for ( unsigned int i = 0; i < 4; i++ )
+//    for ( unsigned int j = 0; j < 4; j++ )
+//    {
+//      ret.m_Values[i][j] = 0.0f;
+//
+//      for(unsigned int k = 0; k < 4; k++)
+//        ret.m_Values[i][j] += m_Values[i][k] * other.m_Values[k][j];
+//    }
+//
+//  return ret;
+//}
+
+Quaternion
+Mat4f::operator *( const Quaternion& q ) const
 {
-  Mat4f result;
-
-  for ( unsigned int row = 0 ; row < 4 ; row++ )
-    for ( unsigned int col = 0 ; col < 4; col++ )
-      for( unsigned int trow = 0; trow < 4; trow++ )
-        result.m_Values[ row ][ col ] += m_Values[ trow ][ col ] * factor.m_Values[ row ][ trow ];
-
-  memcpy( m_Values, result.m_Values, MATRIX_SIZE );
-
-  return *this;
+  return Quaternion(
+    m_Values[0][0] * q.X() + m_Values[0][1] * q.Y() + m_Values[0][2] * q.Z() + m_Values[0][3] * q.W(),
+    m_Values[1][0] * q.X() + m_Values[1][1] * q.Y() + m_Values[1][2] * q.Z() + m_Values[1][3] * q.W(),
+    m_Values[2][0] * q.X() + m_Values[2][1] * q.Y() + m_Values[2][2] * q.Z() + m_Values[2][3] * q.W(),
+    m_Values[3][0] * q.X() + m_Values[3][1] * q.Y() + m_Values[3][2] * q.Z() + m_Values[3][3] * q.W()
+  );
 }
 
 float*
