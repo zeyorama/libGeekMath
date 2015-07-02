@@ -23,14 +23,14 @@
 
 #include "Mat4f.hpp"
 
+#include "Vec2f.hpp"
+#include "Vec3f.hpp"
+#include "Quaternion.hpp"
+#include "../GeekMathConstants.hpp"
+
 #include <cmath>
 #include <cstdio>
 #include <cstring>
-
-#include "../GeekMathConstants.hpp"
-#include "Quaternion.hpp"
-#include "Vec2f.hpp"
-#include "Vec3f.hpp"
 
 static const unsigned int MATRIX_SIZE = sizeof( float ) * 16;
 
@@ -77,19 +77,19 @@ Mat4f::Identity( void )
 Mat4f
 Mat4f::Rotation( const Quaternion& quaternion )
 {
-  Vec3f f = Vec3f(        2.0f * (quaternion.X() * quaternion.Z() - quaternion.W() * quaternion.Y()),
+  Vec3f n = Vec3f(        2.0f * (quaternion.X() * quaternion.Z() - quaternion.W() * quaternion.Y()),
                           2.0f * (quaternion.Y() * quaternion.Z() + quaternion.W() * quaternion.X()),
                    1.0f - 2.0f * (quaternion.X() * quaternion.X() + quaternion.Y() * quaternion.Y()));
 
-  Vec3f u = Vec3f(        2.0f * (quaternion.X() * quaternion.Y() + quaternion.W() * quaternion.Z()),
+  Vec3f v = Vec3f(        2.0f * (quaternion.X() * quaternion.Y() + quaternion.W() * quaternion.Z()),
                    1.0f - 2.0f * (quaternion.X() * quaternion.X() + quaternion.Z() * quaternion.Z()),
                           2.0f * (quaternion.Y() * quaternion.Z() - quaternion.W() * quaternion.X()));
 
-  Vec3f r = Vec3f( 1.0f - 2.0f * (quaternion.Y() * quaternion.Y() + quaternion.Z() * quaternion.Z()),
+  Vec3f u = Vec3f( 1.0f - 2.0f * (quaternion.Y() * quaternion.Y() + quaternion.Z() * quaternion.Z()),
                           2.0f * (quaternion.X() * quaternion.Y() - quaternion.W() * quaternion.Z()),
                           2.0f * (quaternion.X() * quaternion.Z() + quaternion.W() * quaternion.Y()));
 
-  return Rotation( f, u, r );
+  return Rotation( n, v, u );
 }
 
 Mat4f
@@ -191,27 +191,22 @@ Mat4f::Translation( const Vec3f& t )
   return Translation( t[ 0 ], t[ 1 ], t[ 2 ] );
 }
 
-float cotanf( float value )
+float cotf( float value )
 {
-  return 1.0f / ( value );
+  return tanf( M_PI_2 - value );
 }
 
 Mat4f
 Mat4f::Perspective( const float FoV, const float Aspect, const float zNear, const float zFar )
 {
-  if ( zNear >= zFar ) throw "ERROR: zNear must be less than zFar.";
+  const float f   = cotf( DEG2RAD( FoV ) / 2.0f );
+  const float tz  = -( zFar - zNear ) / ( zNear - zFar );
+  const float z   = ( 2.0f * zFar * zNear ) / ( zNear - zFar );
 
-  const float zRange = zFar - zNear;
-  const float alpha  = tanf( DEG2RAD( FoV ) / 2.0f );
-  const float x      = 1.0f / ( alpha  );
-  const float y      = Aspect / alpha;
-  const float z      = ( zFar + zNear ) / zRange;
-  const float tz     = ( 2.0f * zFar * zNear ) / zRange;
-
-  m_Values[0][0] = x;    m_Values[0][1] = 0.0f; m_Values[0][2] = 0.0f; m_Values[0][3] = 0.0f;
-  m_Values[1][0] = 0.0f; m_Values[1][1] = y;    m_Values[1][2] = 0.0f; m_Values[1][3] = 0.0f;
-  m_Values[2][0] = 0.0f; m_Values[2][1] = 0.0f; m_Values[2][2] = z;    m_Values[2][3] = tz;
-  m_Values[3][0] = 0.0f; m_Values[3][1] = 0.0f; m_Values[3][2] = 1.0f; m_Values[3][3] = 0.0f;
+  m_Values[0][0] = f * Aspect;  m_Values[0][1] = 0.0f; m_Values[0][2] =  0.0f; m_Values[0][3] = 0.0f;
+  m_Values[1][0] = 0.0f;        m_Values[1][1] = f;    m_Values[1][2] =  0.0f; m_Values[1][3] = 0.0f;
+  m_Values[2][0] = 0.0f;        m_Values[2][1] = 0.0f; m_Values[2][2] =  tz;   m_Values[2][3] = z;
+  m_Values[3][0] = 0.0f;        m_Values[3][1] = 0.0f; m_Values[3][2] = 1.0f; m_Values[3][3] = 0.0f;
 
   return *this;
 }
@@ -227,9 +222,9 @@ Mat4f::Orthographic( const float Left, const float Right,
   const float height  = Top - Bottom;
   const float depth   = zFar - zNear;
 
-  m_Values[0][0] = 2.0f / width; m_Values[0][1] = 0.0f;          m_Values[0][2] =  0.0f;         m_Values[0][3] = -(Right + Left) / width;
-  m_Values[1][0] = 0.0f;         m_Values[1][1] = 2.0f / height; m_Values[1][2] =  0.0f;         m_Values[1][3] = -(Top + Bottom) / height;
-  m_Values[2][0] = 0.0f;         m_Values[2][1] = 0.0f;          m_Values[2][2] = -2.0f / depth; m_Values[2][3] = -(zFar + zNear) / depth;
+  m_Values[0][0] = 2.0f / width; m_Values[0][1] = 0.0f;          m_Values[0][2] =  0.0f;         m_Values[0][3] = -( ( Right + Left ) / width );
+  m_Values[1][0] = 0.0f;         m_Values[1][1] = 2.0f / height; m_Values[1][2] =  0.0f;         m_Values[1][3] = -( ( Top + Bottom ) / height );
+  m_Values[2][0] = 0.0f;         m_Values[2][1] = 0.0f;          m_Values[2][2] = -2.0f / depth; m_Values[2][3] = -( ( zFar + zNear ) / depth );
   m_Values[3][0] = 0.0f;         m_Values[3][1] = 0.0f;          m_Values[3][2] =  0.0f;         m_Values[3][3] =  1.0f;
 
   return *this;
@@ -242,28 +237,13 @@ Mat4f::operator *( const Mat4f& factor ) const
 
   for ( unsigned int row = 0 ; row < 4 ; row++ )
     for ( unsigned int col = 0 ; col < 4; col++ )
-      for( unsigned int trow = 0; trow < 4; trow++ )
-        result.m_Values[ row ][ col ] += m_Values[ row ][ trow ] * factor.m_Values[ trow ][ col ];
+      result.m_Values[ row ][ col ] = m_Values[ row ][ 0 ] * factor.m_Values[ 0 ][ col ] +
+                                      m_Values[ row ][ 1 ] * factor.m_Values[ 1 ][ col ] +
+                                      m_Values[ row ][ 2 ] * factor.m_Values[ 2 ][ col ] +
+                                      m_Values[ row ][ 3 ] * factor.m_Values[ 3 ][ col ];
 
   return result;
 }
-
-//Mat4f
-//Mat4f::operator *( const Mat4f& other ) const
-//{
-//  Mat4f ret;
-//
-//  for ( unsigned int i = 0; i < 4; i++ )
-//    for ( unsigned int j = 0; j < 4; j++ )
-//    {
-//      ret.m_Values[i][j] = 0.0f;
-//
-//      for(unsigned int k = 0; k < 4; k++)
-//        ret.m_Values[i][j] += m_Values[i][k] * other.m_Values[k][j];
-//    }
-//
-//  return ret;
-//}
 
 Quaternion
 Mat4f::operator *( const Quaternion& q ) const
