@@ -3,6 +3,7 @@
 #include "Vec2f.hpp"
 #include "Vec3f.hpp"
 
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 
@@ -60,6 +61,20 @@ Mat3f::Scale( const float& x, const float& y )
 {
   m_Values[ 0 ][ 0 ] = x;
   m_Values[ 1 ][ 1 ] = y;
+
+  return *this;
+}
+
+Mat3f&
+Mat3f::RotateZ( const float& value )
+{
+  const float c = cosf( value );
+  const float s = sinf( value );
+
+  m_Values[ 0 ][ 0 ] =  c;
+  m_Values[ 0 ][ 1 ] = -s;
+  m_Values[ 1 ][ 0 ] =  s;
+  m_Values[ 1 ][ 1 ] =  c;
 
   return *this;
 }

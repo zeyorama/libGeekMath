@@ -46,6 +46,8 @@ public:
   Mat3f&
   Scale( const float& x, const float& y );
   Mat3f&
+  RotateZ( const float& );
+  Mat3f&
   Translation( const Vec2f& );
   Mat3f&
   Translation( const float& x, const float& y );
