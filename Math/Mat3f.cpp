@@ -50,6 +50,21 @@ Mat3f::Identity( void )
 }
 
 Mat3f&
+Mat3f::Scale( const Vec2f& s )
+{
+  return Scale( s.X(), s.Y() );
+}
+
+Mat3f&
+Mat3f::Scale( const float& x, const float& y )
+{
+  m_Values[ 0 ][ 0 ] = x;
+  m_Values[ 1 ][ 1 ] = y;
+
+  return *this;
+}
+
+Mat3f&
 Mat3f::Translation( const Vec2f& t )
 {
   return Translation( t.X(), t.Y() );

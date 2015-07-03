@@ -42,6 +42,10 @@ public:
   Mat3f&
   Identity( void );
   Mat3f&
+  Scale( const Vec2f& );
+  Mat3f&
+  Scale( const float& x, const float& y );
+  Mat3f&
   Translation( const Vec2f& );
   Mat3f&
   Translation( const float& x, const float& y );
