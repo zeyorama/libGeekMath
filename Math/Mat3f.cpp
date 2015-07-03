@@ -36,6 +36,17 @@ Mat3f::~Mat3f( void ) { return; }
 /* ********************* PUBLIC  ******************** */
 /* ************************************************** */
 /* ************************************************** */
+Mat3f&
+Mat3f::Identity( void )
+{
+  memset( m_Values, 0.0f, MATRIX_SIZE );
+
+  m_Values[ 0 ][ 0 ] = 1.0f;
+  m_Values[ 1 ][ 1 ] = 1.0f;
+  m_Values[ 2 ][ 2 ] = 1.0f;
+
+  return *this;
+}
 
 Mat3f
 Mat3f::operator *( const Mat3f& factor ) const
@@ -44,8 +55,9 @@ Mat3f::operator *( const Mat3f& factor ) const
 
   for ( unsigned int row = 0 ; row < 3 ; row++ )
     for ( unsigned int col = 0 ; col < 3; col++ )
-      for( unsigned int trow = 0; trow < 3; trow++ )
-        result.m_Values[ row ][ col ] += m_Values[ trow ][ col ] * factor.m_Values[ row ][ trow ];
+      result.m_Values[ row ][ col ] = m_Values[ row ][ 0 ] * factor.m_Values[ 0 ][ col ] +
+                                      m_Values[ row ][ 1 ] * factor.m_Values[ 1 ][ col ] +
+                                      m_Values[ row ][ 2 ] * factor.m_Values[ 2 ][ col ];
 
   return result;
 }

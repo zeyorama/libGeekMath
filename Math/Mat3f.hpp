@@ -38,6 +38,9 @@ public:
   virtual
   ~Mat3f( void );
 
+  Mat3f&
+  Identity( void );
+
   Mat3f
   operator *( const Mat3f& factor ) const;
 
