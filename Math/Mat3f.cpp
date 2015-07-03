@@ -1,9 +1,10 @@
 #include "Mat3f.hpp"
 
+#include "Vec2f.hpp"
+#include "Vec3f.hpp"
+
 #include <cstdio>
 #include <cstring>
-
-#include "Vec3f.hpp"
 
 static const unsigned int MATRIX_SIZE = sizeof( float ) * 9;
 
@@ -44,6 +45,21 @@ Mat3f::Identity( void )
   m_Values[ 0 ][ 0 ] = 1.0f;
   m_Values[ 1 ][ 1 ] = 1.0f;
   m_Values[ 2 ][ 2 ] = 1.0f;
+
+  return *this;
+}
+
+Mat3f&
+Mat3f::Translation( const Vec2f& t )
+{
+  return Translation( t.X(), t.Y() );
+}
+
+Mat3f&
+Mat3f::Translation( const float& x, const float& y )
+{
+  m_Values[ 0 ][ 2 ] = x;
+  m_Values[ 1 ][ 2 ] = y;
 
   return *this;
 }

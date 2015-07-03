@@ -24,6 +24,7 @@
 #ifndef MATH_MAT3F_HPP_
 #define MATH_MAT3F_HPP_
 
+class Vec2f;
 class Vec3f;
 
 /*
@@ -40,6 +41,10 @@ public:
 
   Mat3f&
   Identity( void );
+  Mat3f&
+  Translation( const Vec2f& );
+  Mat3f&
+  Translation( const float& x, const float& y );
 
   Mat3f
   operator *( const Mat3f& factor ) const;
