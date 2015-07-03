@@ -52,6 +52,8 @@ public:
 
   Mat3f
   operator *( const Mat3f& factor ) const;
+  Vec3f
+  operator *( const Vec3f& ) const;
 
   Mat3f&
   operator *=( const Mat3f& factor );

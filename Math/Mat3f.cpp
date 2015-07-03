@@ -93,6 +93,20 @@ Mat3f::operator *( const Mat3f& factor ) const
   return result;
 }
 
+Vec3f
+Mat3f::operator *( const Vec3f& v ) const
+{
+  Vec3f result;
+
+  for ( unsigned int row = 0 ; row < 3 ; row++ )
+    for ( unsigned int col = 0 ; col < 3; col++ )
+      result[ row ] = m_Values[ row ][ 0 ] * v.X() +
+                      m_Values[ row ][ 1 ] * v.Y() +
+                      m_Values[ row ][ 2 ] * v.Z();
+
+  return result;
+}
+
 Mat3f&
 Mat3f::operator *=( const Mat3f& factor )
 {
