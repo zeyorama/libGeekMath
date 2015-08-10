@@ -54,6 +54,8 @@ public:
   Quaternion
   Transformation( const Quaternion& vector ) const;
   Mat4f
+  Inverse( void ) const;
+  Mat4f
   Transpose( void ) const;
   Mat4f
   Translation( const Vec3f& );
