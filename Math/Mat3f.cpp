@@ -95,6 +95,44 @@ Mat3f::Translation( const float& x, const float& y )
 }
 
 Mat3f
+Mat3f::Inverse( void ) const
+{
+  Mat3f result;
+  float determinant = m_Values[0][0] * ( m_Values[1][1] * m_Values[2][2] - m_Values[2][1] * m_Values[1][2] ) -
+                      m_Values[0][1] * ( m_Values[1][0] * m_Values[2][2] - m_Values[1][2] * m_Values[2][0] ) +
+                      m_Values[0][2] * ( m_Values[1][0] * m_Values[2][1] - m_Values[1][1] * m_Values[2][0] );
+
+  float invdet = 1.0f / determinant;
+
+  result.m_Values[0][0] =  ( m_Values[1][1] * m_Values[2][2] - m_Values[2][1] * m_Values[1][2] ) * invdet;
+  result.m_Values[1][0] = -( m_Values[0][1] * m_Values[2][2] - m_Values[0][2] * m_Values[2][1] ) * invdet;
+  result.m_Values[2][0] =  ( m_Values[0][1] * m_Values[1][2] - m_Values[0][2] * m_Values[1][1] ) * invdet;
+  result.m_Values[0][1] = -( m_Values[1][0] * m_Values[2][2] - m_Values[1][2] * m_Values[2][0] ) * invdet;
+  result.m_Values[1][1] =  ( m_Values[0][0] * m_Values[2][2] - m_Values[0][2] * m_Values[2][0] ) * invdet;
+  result.m_Values[2][1] = -( m_Values[0][0] * m_Values[1][2] - m_Values[1][0] * m_Values[0][2] ) * invdet;
+  result.m_Values[0][2] =  ( m_Values[1][0] * m_Values[2][1] - m_Values[2][0] * m_Values[1][1] ) * invdet;
+  result.m_Values[1][2] = -( m_Values[0][0] * m_Values[2][1] - m_Values[2][0] * m_Values[0][1] ) * invdet;
+  result.m_Values[2][2] =  ( m_Values[0][0] * m_Values[1][1] - m_Values[1][0] * m_Values[0][1] ) * invdet;
+
+  return result;
+}
+
+Mat3f
+Mat3f::Transpose( void ) const
+{
+  Mat3f result;
+
+  result.m_Values[ 0 ][ 1 ] = m_Values[ 1 ][ 0 ];
+  result.m_Values[ 0 ][ 2 ] = m_Values[ 2 ][ 0 ];
+  result.m_Values[ 1 ][ 0 ] = m_Values[ 0 ][ 1 ];
+  result.m_Values[ 1 ][ 2 ] = m_Values[ 2 ][ 1 ];
+  result.m_Values[ 2 ][ 0 ] = m_Values[ 0 ][ 2 ];
+  result.m_Values[ 2 ][ 1 ] = m_Values[ 1 ][ 2 ];
+
+  return result;
+}
+
+Mat3f
 Mat3f::operator *( const Mat3f& factor ) const
 {
   Mat3f result;
@@ -153,6 +191,12 @@ const float*
 Mat3f::Values( void ) const
 {
   return *m_Values;
+}
+
+void
+Mat3f::Set( const unsigned int row, const unsigned int col, const float& value )
+{
+  m_Values[ row ][ col ] = value;
 }
 
 void

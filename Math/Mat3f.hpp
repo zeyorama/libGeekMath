@@ -51,6 +51,10 @@ public:
   Translation( const Vec2f& );
   Mat3f&
   Translation( const float& x, const float& y );
+  Mat3f
+  Inverse( void ) const;
+  Mat3f
+  Transpose( void ) const;
 
   Mat3f
   operator *( const Mat3f& factor ) const;
@@ -68,6 +72,8 @@ public:
   const float*
   Values( void ) const;
 
+  void
+  Set( const unsigned int row, const unsigned int col, const float& );
   void
   Print( void ) const;
 
