@@ -20,8 +20,8 @@ freely, subject to the following restrictions:
 Created on: Feb 18, 2015
 \author     fkzey
 */
-#ifndef VEC2F_H_
-#define VEC2F_H_
+#ifndef VEC2I_H_
+#define VEC2I_H_
 
 class Vec2i
 {
@@ -127,4 +127,4 @@ private:
 
 };
 
-#endif /* VEC2F_H_ */
+#endif /* VEC2I_H_ */
