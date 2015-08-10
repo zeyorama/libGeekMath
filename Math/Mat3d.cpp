@@ -1,7 +1,7 @@
 #include "Mat3d.hpp"
 
-#include "Vec2f.hpp"
-#include "Vec3f.hpp"
+#include "Vec2d.hpp"
+#include "Vec3d.hpp"
 
 #include <cmath>
 #include <cstdio>
@@ -24,7 +24,7 @@ Mat3d::Mat3d( const Mat3d& other )
   memcpy( m_Values, other.m_Values, MATRIX_SIZE );
 }
 
-Mat3d::Mat3d( const Vec3f& row1, const Vec3f& row2, const Vec3f& row3 )
+Mat3d::Mat3d( const Vec3d& row1, const Vec3d& row2, const Vec3d& row3 )
 {
   m_Values[ 0 ][ 0 ] = row1.X(); m_Values[ 0 ][ 1 ] = row1.Y(); m_Values[ 0 ][ 2 ] = row1.Z();
   m_Values[ 1 ][ 0 ] = row2.X(); m_Values[ 1 ][ 1 ] = row2.Y(); m_Values[ 1 ][ 2 ] = row2.Z();
@@ -51,7 +51,7 @@ Mat3d::Identity( void )
 }
 
 Mat3d&
-Mat3d::Scale( const Vec2f& s )
+Mat3d::Scale( const Vec2d& s )
 {
   return Scale( s.X(), s.Y() );
 }
@@ -82,7 +82,7 @@ Mat3d::RotateZ( const double& value )
 }
 
 Mat3d&
-Mat3d::Translation( const Vec2f& t )
+Mat3d::Translation( const Vec2d& t )
 {
   return Translation( t.X(), t.Y() );
 }
@@ -152,10 +152,10 @@ Mat3d::operator *( const Mat3d& factor ) const
   return result;
 }
 
-Vec3f
-Mat3d::operator *( const Vec3f& v ) const
+Vec3d
+Mat3d::operator *( const Vec3d& v ) const
 {
-  Vec3f result;
+  Vec3d result;
 
   for ( unsigned int row = 0 ; row < 3 ; row++ )
     for ( unsigned int col = 0 ; col < 3; col++ )

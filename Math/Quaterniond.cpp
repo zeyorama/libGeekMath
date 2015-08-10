@@ -28,7 +28,7 @@
 #include <cstring>
 
 #include "Mat4d.hpp"
-#include "Vec2f.hpp"
+#include "Vec2d.hpp"
 #include "Vec3d.hpp"
 
 Quaterniond::Quaterniond( const Mat4d& matrix )
@@ -80,7 +80,7 @@ Quaterniond::Quaterniond( const Mat4d& matrix )
   m_Values[ 2 ] = m_Values[ 2 ] / length;
 }
 
-Quaterniond::Quaterniond( const Vec2f& vector )
+Quaterniond::Quaterniond( const Vec2d& vector )
 {
   m_Values[ 0 ] = vector.X();
   m_Values[ 1 ] = vector.Y();
@@ -598,100 +598,100 @@ Quaterniond::W( void ) const
   return m_Values[ 3 ];
 }
 
-Vec2f
+Vec2d
 Quaterniond::XX( void ) const
 {
-  return Vec2f( m_Values[ 0 ], m_Values[ 0 ] );
+  return Vec2d( m_Values[ 0 ], m_Values[ 0 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::XY( void ) const
 {
-  return Vec2f( m_Values[ 0 ], m_Values[ 0 ] );
+  return Vec2d( m_Values[ 0 ], m_Values[ 0 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::XZ( void ) const
 {
-  return Vec2f( m_Values[ 0 ], m_Values[ 0 ] );
+  return Vec2d( m_Values[ 0 ], m_Values[ 0 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::XW( void ) const
 {
-  return Vec2f( m_Values[ 0 ], m_Values[ 0 ] );
+  return Vec2d( m_Values[ 0 ], m_Values[ 0 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::YX( void ) const
 {
-  return Vec2f( m_Values[ 1 ], m_Values[ 0 ] );
+  return Vec2d( m_Values[ 1 ], m_Values[ 0 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::YY( void ) const
 {
-  return Vec2f( m_Values[ 1 ], m_Values[ 1 ] );
+  return Vec2d( m_Values[ 1 ], m_Values[ 1 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::YZ( void ) const
 {
-  return Vec2f( m_Values[ 1 ], m_Values[ 2 ] );
+  return Vec2d( m_Values[ 1 ], m_Values[ 2 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::YW( void ) const
 {
-  return Vec2f( m_Values[ 1 ], m_Values[ 3 ] );
+  return Vec2d( m_Values[ 1 ], m_Values[ 3 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::ZX( void ) const
 {
-  return Vec2f( m_Values[ 2 ], m_Values[ 0 ] );
+  return Vec2d( m_Values[ 2 ], m_Values[ 0 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::ZY( void ) const
 {
-  return Vec2f( m_Values[ 2 ], m_Values[ 1 ] );
+  return Vec2d( m_Values[ 2 ], m_Values[ 1 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::ZZ( void ) const
 {
-  return Vec2f( m_Values[ 2 ], m_Values[ 2 ] );
+  return Vec2d( m_Values[ 2 ], m_Values[ 2 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::ZW( void ) const
 {
-  return Vec2f( m_Values[ 2 ], m_Values[ 3 ] );
+  return Vec2d( m_Values[ 2 ], m_Values[ 3 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::WX( void ) const
 {
-  return Vec2f( m_Values[ 3 ], m_Values[ 0 ] );
+  return Vec2d( m_Values[ 3 ], m_Values[ 0 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::WY( void ) const
 {
-  return Vec2f( m_Values[ 3 ], m_Values[ 1 ] );
+  return Vec2d( m_Values[ 3 ], m_Values[ 1 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::WZ( void ) const
 {
-  return Vec2f( m_Values[ 3 ], m_Values[ 2 ] );
+  return Vec2d( m_Values[ 3 ], m_Values[ 2 ] );
 }
 
-Vec2f
+Vec2d
 Quaterniond::WW( void ) const
 {
-  return Vec2f( m_Values[ 3 ], m_Values[ 3 ] );
+  return Vec2d( m_Values[ 3 ], m_Values[ 3 ] );
 }
 
 Vec3d

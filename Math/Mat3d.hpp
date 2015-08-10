@@ -24,8 +24,8 @@
 #ifndef MATH_MAT3D_HPP_
 #define MATH_MAT3D_HPP_
 
-class Vec2f;
-class Vec3f;
+class Vec2d;
+class Vec3d;
 
 /*
  * GeekEngine::Mat3d
@@ -35,20 +35,20 @@ class Mat3d
 public:
   Mat3d( void );
   Mat3d( const Mat3d& );
-  Mat3d( const Vec3f&, const Vec3f&, const Vec3f& );
+  Mat3d( const Vec3d&, const Vec3d&, const Vec3d& );
   virtual
   ~Mat3d( void );
 
   Mat3d&
   Identity( void );
   Mat3d&
-  Scale( const Vec2f& );
+  Scale( const Vec2d& );
   Mat3d&
   Scale( const double& x, const double& y );
   Mat3d&
   RotateZ( const double& );
   Mat3d&
-  Translation( const Vec2f& );
+  Translation( const Vec2d& );
   Mat3d&
   Translation( const double& x, const double& y );
   Mat3d
@@ -58,8 +58,8 @@ public:
 
   Mat3d
   operator *( const Mat3d& factor ) const;
-  Vec3f
-  operator *( const Vec3f& ) const;
+  Vec3d
+  operator *( const Vec3d& ) const;
 
   Mat3d&
   operator *=( const Mat3d& factor );

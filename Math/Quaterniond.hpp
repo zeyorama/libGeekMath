@@ -24,16 +24,16 @@
 #ifndef LIBGEEKMATH_QUATERNIOND_H_
 #define LIBGEEKMATH_QUATERNIOND_H_
 
-class Vec2f;
+class Vec2d;
 class Vec3d;
-class Vec4f;
+class Vec4d;
 class Mat4d;
 
 class Quaterniond
 {
 public:
   Quaterniond( const Mat4d& matrix );
-  Quaterniond( const Vec2f& vector );
+  Quaterniond( const Vec2d& vector );
   Quaterniond( const Vec3d& vector );
   Quaterniond( const Quaterniond& vector );
   Quaterniond( const Vec3d& Axis, const double Angle );
@@ -150,37 +150,37 @@ public:
   double
   W( void ) const;
 
-  Vec2f
+  Vec2d
   XX( void ) const;
-  Vec2f
+  Vec2d
   XY( void ) const;
-  Vec2f
+  Vec2d
   XZ( void ) const;
-  Vec2f
+  Vec2d
   XW( void ) const;
-  Vec2f
+  Vec2d
   YX( void ) const;
-  Vec2f
+  Vec2d
   YY( void ) const;
-  Vec2f
+  Vec2d
   YZ( void ) const;
-  Vec2f
+  Vec2d
   YW( void ) const;
-  Vec2f
+  Vec2d
   ZX( void ) const;
-  Vec2f
+  Vec2d
   ZY( void ) const;
-  Vec2f
+  Vec2d
   ZZ( void ) const;
-  Vec2f
+  Vec2d
   ZW( void ) const;
-  Vec2f
+  Vec2d
   WX( void ) const;
-  Vec2f
+  Vec2d
   WY( void ) const;
-  Vec2f
+  Vec2d
   WZ( void ) const;
-  Vec2f
+  Vec2d
   WW( void ) const;
 
   Vec3d
