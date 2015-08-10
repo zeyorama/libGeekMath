@@ -1,5 +1,7 @@
 #include "Mat3i.hpp"
 
+#include "Vec2i.hpp"
+
 #include <cstdio>
 #include <cstring>
 
@@ -37,6 +39,12 @@ Mat3i::Identity( void )
   m_Values[ 2 ][ 2 ] = 1;
 
   return *this;
+}
+
+Mat3i&
+Mat3i::Translation( const Vec2i& vector )
+{
+  return Translation( vector.X(), vector.Y() );
 }
 
 Mat3i&

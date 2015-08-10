@@ -24,6 +24,8 @@
 #ifndef MATH_MAT3I_HPP_
 #define MATH_MAT3I_HPP_
 
+class Vec2i;
+
 /*
  * GeekEngine::Mat3i
  */
@@ -37,6 +39,8 @@ public:
 
   Mat3i&
   Identity( void );
+  Mat3i&
+  Translation( const Vec2i& );
   Mat3i&
   Translation( const int& x, const int& y );
   Mat3i
