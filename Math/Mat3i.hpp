@@ -37,11 +37,11 @@ public:
   virtual
   ~Mat3i( void );
 
-  Mat3i&
+  Mat3i
   Identity( void );
-  Mat3i&
+  Mat3i
   Translation( const Vec2i& );
-  Mat3i&
+  Mat3i
   Translation( const int& x, const int& y );
   Mat3i
   Inverse( void ) const;

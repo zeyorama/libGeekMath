@@ -38,7 +38,7 @@ Mat3f::~Mat3f( void ) { return; }
 /* ********************* PUBLIC  ******************** */
 /* ************************************************** */
 /* ************************************************** */
-Mat3f&
+Mat3f
 Mat3f::Identity( void )
 {
   memset( m_Values, 0.0f, MATRIX_SIZE );
@@ -50,13 +50,13 @@ Mat3f::Identity( void )
   return *this;
 }
 
-Mat3f&
+Mat3f
 Mat3f::Scale( const Vec2f& s )
 {
   return Scale( s.X(), s.Y() );
 }
 
-Mat3f&
+Mat3f
 Mat3f::Scale( const float& x, const float& y )
 {
   Identity();
@@ -67,11 +67,13 @@ Mat3f::Scale( const float& x, const float& y )
   return *this;
 }
 
-Mat3f&
+Mat3f
 Mat3f::RotateZ( const float& value )
 {
   const float c = cosf( value );
   const float s = sinf( value );
+
+  Identity();
 
   m_Values[ 0 ][ 0 ] =  c;
   m_Values[ 0 ][ 1 ] = -s;
@@ -81,13 +83,13 @@ Mat3f::RotateZ( const float& value )
   return *this;
 }
 
-Mat3f&
+Mat3f
 Mat3f::Translation( const Vec2f& t )
 {
   return Translation( t.X(), t.Y() );
 }
 
-Mat3f&
+Mat3f
 Mat3f::Translation( const float& x, const float& y )
 {
   Identity();

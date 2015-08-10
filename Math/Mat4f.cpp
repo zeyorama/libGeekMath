@@ -46,24 +46,25 @@ Mat4f::Mat4f( const Mat4f& matrix )
 
 Mat4f::~Mat4f( void ) { return; }
 
-Mat4f&
+Mat4f
 Mat4f::Scale( const Vec3f& scale )
 {
   return Scale( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
 }
 
-Mat4f&
+Mat4f
 Mat4f::Scale( const float& x, const float& y, const float& z )
 {
-  m_Values[0][0] = x;    m_Values[0][1] = 0.0f; m_Values[0][2] = 0.0f; m_Values[0][3] = 0.0f;
-  m_Values[1][0] = 0.0f; m_Values[1][1] = y;    m_Values[1][2] = 0.0f; m_Values[1][3] = 0.0f;
-  m_Values[2][0] = 0.0f; m_Values[2][1] = 0.0f; m_Values[2][2] = z;    m_Values[2][3] = 0.0f;
-  m_Values[3][0] = 0.0f; m_Values[3][1] = 0.0f; m_Values[3][2] = 0.0f; m_Values[3][3] = 1.0f;
+  Identity();
+
+  m_Values[0][0] = x;
+  m_Values[1][1] = y;
+  m_Values[2][2] = z;
 
   return *this;
 }
 
-Mat4f&
+Mat4f
 Mat4f::Identity( void )
 {
   memset( m_Values, 0.0f, MATRIX_SIZE );
@@ -76,7 +77,7 @@ Mat4f::Identity( void )
   return *this;
 }
 
-Mat4f&
+Mat4f
 Mat4f::Rotation( const Quaternion& quaternion )
 {
   Vec3f n = Vec3f(        2.0f * (quaternion.X() * quaternion.Z() - quaternion.W() * quaternion.Y()),
@@ -94,22 +95,23 @@ Mat4f::Rotation( const Quaternion& quaternion )
   return Rotation( n, v, u );
 }
 
-Mat4f&
+Mat4f
 Mat4f::Rotation( const Vec3f& forward, const Vec3f& up )
 {
   Vec3f n = forward.Normalize();
   Vec3f u = Vec3f( up.Normalize() ).Cross( n );
   Vec3f v = n.Cross(u);
 
-  m_Values[ 0 ][ 0 ] = u.X(); m_Values[ 0 ][ 1 ] = u.Y(); m_Values[ 0 ][ 2 ] = u.Z(); m_Values[ 0 ][ 3 ] = 0.0f;
-  m_Values[ 1 ][ 0 ] = v.X(); m_Values[ 1 ][ 1 ] = v.Y(); m_Values[ 1 ][ 2 ] = v.Z(); m_Values[ 1 ][ 3 ] = 0.0f;
-  m_Values[ 2 ][ 0 ] = n.X(); m_Values[ 2 ][ 1 ] = n.Y(); m_Values[ 2 ][ 2 ] = n.Z(); m_Values[ 2 ][ 3 ] = 0.0f;
-  m_Values[ 3 ][ 0 ] = 0.0f;  m_Values[ 3 ][ 1 ] = 0.0f;  m_Values[ 3 ][ 2 ] = 0.0f;  m_Values[ 3 ][ 3 ] = 1.0f;
+  Identity();
+
+  m_Values[ 0 ][ 0 ] = u.X(); m_Values[ 0 ][ 1 ] = u.Y(); m_Values[ 0 ][ 2 ] = u.Z();
+  m_Values[ 1 ][ 0 ] = v.X(); m_Values[ 1 ][ 1 ] = v.Y(); m_Values[ 1 ][ 2 ] = v.Z();
+  m_Values[ 2 ][ 0 ] = n.X(); m_Values[ 2 ][ 1 ] = n.Y(); m_Values[ 2 ][ 2 ] = n.Z();
 
   return *this;
 }
 
-Mat4f&
+Mat4f
 Mat4f::Rotation( const float x, const float y, const float z )
 {
   Mat4f rx, ry, rz;
@@ -134,13 +136,14 @@ Mat4f::Rotation( const float x, const float y, const float z )
   return *this;
 }
 
-Mat4f&
+Mat4f
 Mat4f::Rotation( const Vec3f& n, const Vec3f& v, const Vec3f& u )
 {
-  m_Values[ 0 ][ 0 ] = u.X(); m_Values[ 0 ][ 1 ] = u.Y(); m_Values[ 0 ][ 2 ] = u.Z(); m_Values[ 0 ][ 3 ] = 0.0f;
-  m_Values[ 1 ][ 0 ] = v.X(); m_Values[ 1 ][ 1 ] = v.Y(); m_Values[ 1 ][ 2 ] = v.Z(); m_Values[ 1 ][ 3 ] = 0.0f;
-  m_Values[ 2 ][ 0 ] = n.X(); m_Values[ 2 ][ 1 ] = n.Y(); m_Values[ 2 ][ 2 ] = n.Z(); m_Values[ 2 ][ 3 ] = 0.0f;
-  m_Values[ 3 ][ 0 ] = 0.0f;  m_Values[ 3 ][ 1 ] = 0.0f;  m_Values[ 3 ][ 2 ] = 0.0f;  m_Values[ 3 ][ 3 ] = 1.0f;
+  Identity();
+
+  m_Values[ 0 ][ 0 ] = u.X(); m_Values[ 0 ][ 1 ] = u.Y(); m_Values[ 0 ][ 2 ] = u.Z();
+  m_Values[ 1 ][ 0 ] = v.X(); m_Values[ 1 ][ 1 ] = v.Y(); m_Values[ 1 ][ 2 ] = v.Z();
+  m_Values[ 2 ][ 0 ] = n.X(); m_Values[ 2 ][ 1 ] = n.Y(); m_Values[ 2 ][ 2 ] = n.Z();
 
   return *this;
 }
@@ -331,18 +334,19 @@ Mat4f::Transpose( void ) const
 }
 
 
-Mat4f&
+Mat4f
 Mat4f::Translation( const float& x, const float& y, const float& z )
 {
-  m_Values[ 0 ][ 0 ] = 1.0f; m_Values[ 0 ][ 1 ] = 0.0f; m_Values[ 0 ][ 2 ] = 0.0f; m_Values[ 0 ][ 3 ] = x;
-  m_Values[ 1 ][ 0 ] = 0.0f; m_Values[ 1 ][ 1 ] = 1.0f; m_Values[ 1 ][ 2 ] = 0.0f; m_Values[ 1 ][ 3 ] = y;
-  m_Values[ 2 ][ 0 ] = 0.0f; m_Values[ 2 ][ 1 ] = 0.0f; m_Values[ 2 ][ 2 ] = 1.0f; m_Values[ 2 ][ 3 ] = z;
-  m_Values[ 3 ][ 0 ] = 0.0f; m_Values[ 3 ][ 1 ] = 0.0f; m_Values[ 3 ][ 2 ] = 0.0f; m_Values[ 3 ][ 3 ] = 1.0f;
+  Identity();
+
+  m_Values[ 0 ][ 3 ] = x;
+  m_Values[ 1 ][ 3 ] = y;
+  m_Values[ 2 ][ 3 ] = z;
 
   return *this;
 }
 
-Mat4f&
+Mat4f
 Mat4f::Translation( const Vec3f& t )
 {
   return Translation( t[ 0 ], t[ 1 ], t[ 2 ] );
@@ -353,36 +357,41 @@ float cotf( float value )
   return tanf( M_PI_2 - value );
 }
 
-Mat4f&
+Mat4f
 Mat4f::Perspective( const float FoV, const float Aspect, const float zNear, const float zFar )
 {
   const float f   = cotf( DEG2RAD( FoV ) / 2.0f );
   const float tz  = -( zFar - zNear ) / ( zNear - zFar );
   const float z   = ( 2.0f * zFar * zNear ) / ( zNear - zFar );
 
-  m_Values[0][0] = f * Aspect;  m_Values[0][1] = 0.0f; m_Values[0][2] =  0.0f; m_Values[0][3] = 0.0f;
-  m_Values[1][0] = 0.0f;        m_Values[1][1] = f;    m_Values[1][2] =  0.0f; m_Values[1][3] = 0.0f;
-  m_Values[2][0] = 0.0f;        m_Values[2][1] = 0.0f; m_Values[2][2] =  tz;   m_Values[2][3] = z;
-  m_Values[3][0] = 0.0f;        m_Values[3][1] = 0.0f; m_Values[3][2] = 1.0f; m_Values[3][3] = 0.0f;
+  Identity();
+
+  m_Values[0][0] = f * Aspect;
+  m_Values[1][1] = f;
+  m_Values[2][2] =  tz;
+  m_Values[2][3] = z;
+  m_Values[3][2] = 1.0f;
+  m_Values[3][3] = 0.0f;
 
   return *this;
 }
 
-Mat4f&
+Mat4f
 Mat4f::Orthographic( const float Left, const float Right,
                      const float Bottom, const float Top,
                      const float zNear, const float zFar )
 {
-  if ( zNear >= zFar ) throw "ERROR: zNear must be less than zFar.";
-
   const float width   = Right - Left;
   const float height  = Top - Bottom;
   const float depth   = zFar - zNear;
 
-  m_Values[0][0] = 2.0f / width; m_Values[0][1] = 0.0f;          m_Values[0][2] =  0.0f;         m_Values[0][3] = -( ( Right + Left ) / width );
-  m_Values[1][0] = 0.0f;         m_Values[1][1] = 2.0f / height; m_Values[1][2] =  0.0f;         m_Values[1][3] = -( ( Top + Bottom ) / height );
-  m_Values[2][0] = 0.0f;         m_Values[2][1] = 0.0f;          m_Values[2][2] = -2.0f / depth; m_Values[2][3] = -( ( zFar + zNear ) / depth );
-  m_Values[3][0] = 0.0f;         m_Values[3][1] = 0.0f;          m_Values[3][2] =  0.0f;         m_Values[3][3] =  1.0f;
+  Identity();
+
+  m_Values[0][0] = 2.0f / width;
+  m_Values[0][3] = -( ( Right + Left ) / width );
+  m_Values[1][1] = 2.0f / height; m_Values[1][2] =  0.0f;
+  m_Values[1][3] = -( ( Top + Bottom ) / height );
+  m_Values[2][2] = -2.0f / depth; m_Values[2][3] = -( ( zFar + zNear ) / depth );
 
   return *this;
 }

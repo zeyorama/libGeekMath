@@ -35,19 +35,19 @@ public:
   virtual
   ~Mat4d( void );
 
-  Mat4d&
+  Mat4d
   Scale( const Vec3d& );
-  Mat4d&
+  Mat4d
   Scale( const double&, const double&, const double& );
-  Mat4d&
+  Mat4d
   Identity( void );
-  Mat4d&
+  Mat4d
   Rotation( const Quaterniond& Quaterniond );
-  Mat4d&
+  Mat4d
   Rotation( const Vec3d& forward, const Vec3d& up );
-  Mat4d&
+  Mat4d
   Rotation( const double x, const double y, const double z );
-  Mat4d&
+  Mat4d
   Rotation( const Vec3d& n, const Vec3d& v, const Vec3d& u );
   Vec3d
   Transformation( const Vec3d& vector ) const;
@@ -57,13 +57,13 @@ public:
   Inverse( void ) const;
   Mat4d
   Transpose( void ) const;
-  Mat4d&
+  Mat4d
   Translation( const Vec3d& );
-  Mat4d&
+  Mat4d
   Translation( const double&, const double&, const double& );
-  Mat4d&
+  Mat4d
   Perspective( const double FoV, const double Aspect, const double zNear, const double zFar );
-  Mat4d&
+  Mat4d
   Orthographic( const double Left, const double Right,
                 const double Bottom, const double Top,
                 const double zNear, const double zFar );

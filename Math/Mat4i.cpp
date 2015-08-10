@@ -40,7 +40,7 @@ Mat4i::Mat4i( const Mat4i& matrix )
 
 Mat4i::~Mat4i( void ) { return; }
 
-Mat4i&
+Mat4i
 Mat4i::Identity( void )
 {
   memset( m_Values, 0, MATRIX_SIZE );
@@ -53,7 +53,7 @@ Mat4i::Identity( void )
   return *this;
 }
 
-Mat4i&
+Mat4i
 Mat4i::Translation( const int& x, const int& y, const int& z )
 {
   Identity();

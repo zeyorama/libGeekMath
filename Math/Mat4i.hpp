@@ -35,9 +35,9 @@ public:
   virtual
   ~Mat4i( void );
 
-  Mat4i&
+  Mat4i
   Identity( void );
-  Mat4i&
+  Mat4i
   Translation( const int& x, const int& y, const int& z );
   Mat4i
   Inverse( void ) const;

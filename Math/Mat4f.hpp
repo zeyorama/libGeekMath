@@ -35,19 +35,19 @@ public:
   virtual
   ~Mat4f( void );
 
-  Mat4f&
+  Mat4f
   Scale( const Vec3f& );
-  Mat4f&
+  Mat4f
   Scale( const float&, const float&, const float& );
-  Mat4f&
+  Mat4f
   Identity( void );
-  Mat4f&
+  Mat4f
   Rotation( const Quaternion& quaternion );
-  Mat4f&
+  Mat4f
   Rotation( const Vec3f& forward, const Vec3f& up );
-  Mat4f&
+  Mat4f
   Rotation( const float x, const float y, const float z );
-  Mat4f&
+  Mat4f
   Rotation( const Vec3f& n, const Vec3f& v, const Vec3f& u );
   Vec3f
   Transformation( const Vec3f& vector ) const;
@@ -57,13 +57,13 @@ public:
   Inverse( void ) const;
   Mat4f
   Transpose( void ) const;
-  Mat4f&
+  Mat4f
   Translation( const Vec3f& );
-  Mat4f&
+  Mat4f
   Translation( const float&, const float&, const float& );
-  Mat4f&
+  Mat4f
   Perspective( const float FoV, const float Aspect, const float zNear, const float zFar );
-  Mat4f&
+  Mat4f
   Orthographic( const float Left, const float Right,
                 const float Bottom, const float Top,
                 const float zNear, const float zFar );

@@ -38,7 +38,7 @@ Mat3d::~Mat3d( void ) { return; }
 /* ********************* PUBLIC  ******************** */
 /* ************************************************** */
 /* ************************************************** */
-Mat3d&
+Mat3d
 Mat3d::Identity( void )
 {
   memset( m_Values, 0.0, MATRIX_SIZE );
@@ -50,13 +50,13 @@ Mat3d::Identity( void )
   return *this;
 }
 
-Mat3d&
+Mat3d
 Mat3d::Scale( const Vec2d& s )
 {
   return Scale( s.X(), s.Y() );
 }
 
-Mat3d&
+Mat3d
 Mat3d::Scale( const double& x, const double& y )
 {
   Identity();
@@ -67,11 +67,13 @@ Mat3d::Scale( const double& x, const double& y )
   return *this;
 }
 
-Mat3d&
+Mat3d
 Mat3d::RotateZ( const double& value )
 {
   const double c = cosf( value );
   const double s = sinf( value );
+
+  Identity();
 
   m_Values[ 0 ][ 0 ] =  c;
   m_Values[ 0 ][ 1 ] = -s;
@@ -81,13 +83,13 @@ Mat3d::RotateZ( const double& value )
   return *this;
 }
 
-Mat3d&
+Mat3d
 Mat3d::Translation( const Vec2d& t )
 {
   return Translation( t.X(), t.Y() );
 }
 
-Mat3d&
+Mat3d
 Mat3d::Translation( const double& x, const double& y )
 {
   Identity();
@@ -102,9 +104,9 @@ Mat3d
 Mat3d::Inverse( void ) const
 {
   Mat3d result;
-  double determinant = m_Values[0][0] * ( m_Values[1][1] * m_Values[2][2] - m_Values[2][1] * m_Values[1][2] ) -
-                      m_Values[0][1] * ( m_Values[1][0] * m_Values[2][2] - m_Values[1][2] * m_Values[2][0] ) +
-                      m_Values[0][2] * ( m_Values[1][0] * m_Values[2][1] - m_Values[1][1] * m_Values[2][0] );
+  double determinant =  m_Values[0][0] * ( m_Values[1][1] * m_Values[2][2] - m_Values[2][1] * m_Values[1][2] ) -
+                        m_Values[0][1] * ( m_Values[1][0] * m_Values[2][2] - m_Values[1][2] * m_Values[2][0] ) +
+                        m_Values[0][2] * ( m_Values[1][0] * m_Values[2][1] - m_Values[1][1] * m_Values[2][0] );
 
   if ( determinant == 0.0 ) return *this;
 

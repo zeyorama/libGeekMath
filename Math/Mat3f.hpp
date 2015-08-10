@@ -39,17 +39,17 @@ public:
   virtual
   ~Mat3f( void );
 
-  Mat3f&
+  Mat3f
   Identity( void );
-  Mat3f&
+  Mat3f
   Scale( const Vec2f& );
-  Mat3f&
+  Mat3f
   Scale( const float& x, const float& y );
-  Mat3f&
+  Mat3f
   RotateZ( const float& );
-  Mat3f&
+  Mat3f
   Translation( const Vec2f& );
-  Mat3f&
+  Mat3f
   Translation( const float& x, const float& y );
   Mat3f
   Inverse( void ) const;

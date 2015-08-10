@@ -29,7 +29,7 @@ Mat3i::~Mat3i( void ) { return; }
 /* ********************* PUBLIC  ******************** */
 /* ************************************************** */
 /* ************************************************** */
-Mat3i&
+Mat3i
 Mat3i::Identity( void )
 {
   memset( m_Values, 0, MATRIX_SIZE );
@@ -41,13 +41,13 @@ Mat3i::Identity( void )
   return *this;
 }
 
-Mat3i&
+Mat3i
 Mat3i::Translation( const Vec2i& vector )
 {
   return Translation( vector.X(), vector.Y() );
 }
 
-Mat3i&
+Mat3i
 Mat3i::Translation( const int& x, const int& y )
 {
   Identity();

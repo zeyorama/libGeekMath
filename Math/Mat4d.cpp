@@ -46,24 +46,25 @@ Mat4d::Mat4d( const Mat4d& matrix )
 
 Mat4d::~Mat4d( void ) { return; }
 
-Mat4d&
+Mat4d
 Mat4d::Scale( const Vec3d& scale )
 {
   return Scale( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
 }
 
-Mat4d&
+Mat4d
 Mat4d::Scale( const double& x, const double& y, const double& z )
 {
-  m_Values[0][0] = x;    m_Values[0][1] = 0.0; m_Values[0][2] = 0.0; m_Values[0][3] = 0.0;
-  m_Values[1][0] = 0.0; m_Values[1][1] = y;    m_Values[1][2] = 0.0; m_Values[1][3] = 0.0;
-  m_Values[2][0] = 0.0; m_Values[2][1] = 0.0; m_Values[2][2] = z;    m_Values[2][3] = 0.0;
-  m_Values[3][0] = 0.0; m_Values[3][1] = 0.0; m_Values[3][2] = 0.0; m_Values[3][3] = 1.0;
+  Identity();
+
+  m_Values[0][0] = x;
+  m_Values[1][1] = y;
+  m_Values[2][2] = z;
 
   return *this;
 }
 
-Mat4d&
+Mat4d
 Mat4d::Identity( void )
 {
   memset( m_Values, 0.0, MATRIX_SIZE );
@@ -76,7 +77,7 @@ Mat4d::Identity( void )
   return *this;
 }
 
-Mat4d&
+Mat4d
 Mat4d::Rotation( const Quaterniond& Quaterniond )
 {
   Vec3d n = Vec3d(        2.0 * (Quaterniond.X() * Quaterniond.Z() - Quaterniond.W() * Quaterniond.Y()),
@@ -94,22 +95,23 @@ Mat4d::Rotation( const Quaterniond& Quaterniond )
   return Rotation( n, v, u );
 }
 
-Mat4d&
+Mat4d
 Mat4d::Rotation( const Vec3d& forward, const Vec3d& up )
 {
   Vec3d n = forward.Normalize();
   Vec3d u = Vec3d( up.Normalize() ).Cross( n );
   Vec3d v = n.Cross(u);
 
-  m_Values[ 0 ][ 0 ] = u.X(); m_Values[ 0 ][ 1 ] = u.Y(); m_Values[ 0 ][ 2 ] = u.Z(); m_Values[ 0 ][ 3 ] = 0.0;
-  m_Values[ 1 ][ 0 ] = v.X(); m_Values[ 1 ][ 1 ] = v.Y(); m_Values[ 1 ][ 2 ] = v.Z(); m_Values[ 1 ][ 3 ] = 0.0;
-  m_Values[ 2 ][ 0 ] = n.X(); m_Values[ 2 ][ 1 ] = n.Y(); m_Values[ 2 ][ 2 ] = n.Z(); m_Values[ 2 ][ 3 ] = 0.0;
-  m_Values[ 3 ][ 0 ] = 0.0;  m_Values[ 3 ][ 1 ] = 0.0;  m_Values[ 3 ][ 2 ] = 0.0;  m_Values[ 3 ][ 3 ] = 1.0;
+  Identity();
+
+  m_Values[ 0 ][ 0 ] = u.X(); m_Values[ 0 ][ 1 ] = u.Y(); m_Values[ 0 ][ 2 ] = u.Z();
+  m_Values[ 1 ][ 0 ] = v.X(); m_Values[ 1 ][ 1 ] = v.Y(); m_Values[ 1 ][ 2 ] = v.Z();
+  m_Values[ 2 ][ 0 ] = n.X(); m_Values[ 2 ][ 1 ] = n.Y(); m_Values[ 2 ][ 2 ] = n.Z();
 
   return *this;
 }
 
-Mat4d&
+Mat4d
 Mat4d::Rotation( const double x, const double y, const double z )
 {
   Mat4d rx, ry, rz;
@@ -134,13 +136,14 @@ Mat4d::Rotation( const double x, const double y, const double z )
   return *this;
 }
 
-Mat4d&
+Mat4d
 Mat4d::Rotation( const Vec3d& n, const Vec3d& v, const Vec3d& u )
 {
-  m_Values[ 0 ][ 0 ] = u.X(); m_Values[ 0 ][ 1 ] = u.Y(); m_Values[ 0 ][ 2 ] = u.Z(); m_Values[ 0 ][ 3 ] = 0.0;
-  m_Values[ 1 ][ 0 ] = v.X(); m_Values[ 1 ][ 1 ] = v.Y(); m_Values[ 1 ][ 2 ] = v.Z(); m_Values[ 1 ][ 3 ] = 0.0;
-  m_Values[ 2 ][ 0 ] = n.X(); m_Values[ 2 ][ 1 ] = n.Y(); m_Values[ 2 ][ 2 ] = n.Z(); m_Values[ 2 ][ 3 ] = 0.0;
-  m_Values[ 3 ][ 0 ] = 0.0;  m_Values[ 3 ][ 1 ] = 0.0;  m_Values[ 3 ][ 2 ] = 0.0;  m_Values[ 3 ][ 3 ] = 1.0;
+  Identity();
+
+  m_Values[ 0 ][ 0 ] = u.X(); m_Values[ 0 ][ 1 ] = u.Y(); m_Values[ 0 ][ 2 ] = u.Z();
+  m_Values[ 1 ][ 0 ] = v.X(); m_Values[ 1 ][ 1 ] = v.Y(); m_Values[ 1 ][ 2 ] = v.Z();
+  m_Values[ 2 ][ 0 ] = n.X(); m_Values[ 2 ][ 1 ] = n.Y(); m_Values[ 2 ][ 2 ] = n.Z();
 
   return *this;
 }
@@ -331,18 +334,19 @@ Mat4d::Transpose( void ) const
 }
 
 
-Mat4d&
+Mat4d
 Mat4d::Translation( const double& x, const double& y, const double& z )
 {
-  m_Values[ 0 ][ 0 ] = 1.0; m_Values[ 0 ][ 1 ] = 0.0; m_Values[ 0 ][ 2 ] = 0.0; m_Values[ 0 ][ 3 ] = x;
-  m_Values[ 1 ][ 0 ] = 0.0; m_Values[ 1 ][ 1 ] = 1.0; m_Values[ 1 ][ 2 ] = 0.0; m_Values[ 1 ][ 3 ] = y;
-  m_Values[ 2 ][ 0 ] = 0.0; m_Values[ 2 ][ 1 ] = 0.0; m_Values[ 2 ][ 2 ] = 1.0; m_Values[ 2 ][ 3 ] = z;
-  m_Values[ 3 ][ 0 ] = 0.0; m_Values[ 3 ][ 1 ] = 0.0; m_Values[ 3 ][ 2 ] = 0.0; m_Values[ 3 ][ 3 ] = 1.0;
+  Identity();
+
+  m_Values[ 0 ][ 3 ] = x;
+  m_Values[ 1 ][ 3 ] = y;
+  m_Values[ 2 ][ 3 ] = z;
 
   return *this;
 }
 
-Mat4d&
+Mat4d
 Mat4d::Translation( const Vec3d& t )
 {
   return Translation( t[ 0 ], t[ 1 ], t[ 2 ] );
@@ -353,36 +357,42 @@ double cotf( double value )
   return tanf( M_PI_2 - value );
 }
 
-Mat4d&
+Mat4d
 Mat4d::Perspective( const double FoV, const double Aspect, const double zNear, const double zFar )
 {
   const double f   = cotf( DEG2RAD( FoV ) / 2.0 );
   const double tz  = -( zFar - zNear ) / ( zNear - zFar );
   const double z   = ( 2.0 * zFar * zNear ) / ( zNear - zFar );
 
-  m_Values[0][0] = f * Aspect;  m_Values[0][1] = 0.0; m_Values[0][2] =  0.0; m_Values[0][3] = 0.0;
-  m_Values[1][0] = 0.0;        m_Values[1][1] = f;    m_Values[1][2] =  0.0; m_Values[1][3] = 0.0;
-  m_Values[2][0] = 0.0;        m_Values[2][1] = 0.0; m_Values[2][2] =  tz;   m_Values[2][3] = z;
-  m_Values[3][0] = 0.0;        m_Values[3][1] = 0.0; m_Values[3][2] = 1.0; m_Values[3][3] = 0.0;
+  Identity();
+
+  m_Values[0][0] = f * Aspect;
+  m_Values[1][1] = f;
+  m_Values[2][2] =  tz;
+  m_Values[2][3] = z;
+  m_Values[3][2] = 1.0;
+  m_Values[3][3] = 0.0;
 
   return *this;
 }
 
-Mat4d&
+Mat4d
 Mat4d::Orthographic( const double Left, const double Right,
                      const double Bottom, const double Top,
                      const double zNear, const double zFar )
 {
-  if ( zNear >= zFar ) throw "ERROR: zNear must be less than zFar.";
-
   const double width   = Right - Left;
   const double height  = Top - Bottom;
   const double depth   = zFar - zNear;
 
-  m_Values[0][0] = 2.0 / width; m_Values[0][1] = 0.0;          m_Values[0][2] =  0.0;         m_Values[0][3] = -( ( Right + Left ) / width );
-  m_Values[1][0] = 0.0;         m_Values[1][1] = 2.0 / height; m_Values[1][2] =  0.0;         m_Values[1][3] = -( ( Top + Bottom ) / height );
-  m_Values[2][0] = 0.0;         m_Values[2][1] = 0.0;          m_Values[2][2] = -2.0 / depth; m_Values[2][3] = -( ( zFar + zNear ) / depth );
-  m_Values[3][0] = 0.0;         m_Values[3][1] = 0.0;          m_Values[3][2] =  0.0;         m_Values[3][3] =  1.0;
+  Identity();
+
+  m_Values[0][0] = 2.0 / width;
+  m_Values[0][3] = -( ( Right + Left ) / width );
+  m_Values[1][1] = 2.0 / height;
+  m_Values[1][3] = -( ( Top + Bottom ) / height );
+  m_Values[2][2] = -2.0 / depth;
+  m_Values[2][3] = -( ( zFar + zNear ) / depth );
 
   return *this;
 }
