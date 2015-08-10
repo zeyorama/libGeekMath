@@ -1,94 +1,46 @@
-#include "Mat3f.hpp"
+#include "Mat3i.hpp"
 
-#include "Vec2f.hpp"
-#include "Vec3f.hpp"
-
-#include <cmath>
 #include <cstdio>
 #include <cstring>
 
-static const unsigned int MATRIX_SIZE = sizeof( float ) * 9;
+static const unsigned int MATRIX_SIZE = sizeof( int ) * 9;
 
 /* ************************************************** */
 /* ************************************************** */
 /* **************** CON-/DESTRUCTORS  *************** */
 /* ************************************************** */
 /* ************************************************** */
-Mat3f::Mat3f( void )
+Mat3i::Mat3i( void )
 {
-  memset( m_Values, 0.0f, MATRIX_SIZE );
+  memset( m_Values, 0, MATRIX_SIZE );
 }
 
-Mat3f::Mat3f( const Mat3f& other )
+Mat3i::Mat3i( const Mat3i& other )
 {
   memcpy( m_Values, other.m_Values, MATRIX_SIZE );
 }
 
-Mat3f::Mat3f( const Vec3f& row1, const Vec3f& row2, const Vec3f& row3 )
-{
-  m_Values[ 0 ][ 0 ] = row1.X(); m_Values[ 0 ][ 1 ] = row1.Y(); m_Values[ 0 ][ 2 ] = row1.Z();
-  m_Values[ 1 ][ 0 ] = row2.X(); m_Values[ 1 ][ 1 ] = row2.Y(); m_Values[ 1 ][ 2 ] = row2.Z();
-  m_Values[ 2 ][ 0 ] = row3.X(); m_Values[ 2 ][ 1 ] = row3.Y(); m_Values[ 2 ][ 2 ] = row3.Z();
-}
-
-Mat3f::~Mat3f( void ) { return; }
+Mat3i::~Mat3i( void ) { return; }
 
 /* ************************************************** */
 /* ************************************************** */
 /* ********************* PUBLIC  ******************** */
 /* ************************************************** */
 /* ************************************************** */
-Mat3f&
-Mat3f::Identity( void )
+Mat3i&
+Mat3i::Identity( void )
 {
-  memset( m_Values, 0.0f, MATRIX_SIZE );
+  memset( m_Values, 0, MATRIX_SIZE );
 
-  m_Values[ 0 ][ 0 ] = 1.0f;
-  m_Values[ 1 ][ 1 ] = 1.0f;
-  m_Values[ 2 ][ 2 ] = 1.0f;
+  m_Values[ 0 ][ 0 ] = 1;
+  m_Values[ 1 ][ 1 ] = 1;
+  m_Values[ 2 ][ 2 ] = 1;
 
   return *this;
 }
 
-Mat3f&
-Mat3f::Scale( const Vec2f& s )
-{
-  return Scale( s.X(), s.Y() );
-}
-
-Mat3f&
-Mat3f::Scale( const float& x, const float& y )
-{
-  Identity();
-
-  m_Values[ 0 ][ 0 ] = x;
-  m_Values[ 1 ][ 1 ] = y;
-
-  return *this;
-}
-
-Mat3f&
-Mat3f::RotateZ( const float& value )
-{
-  const float c = cosf( value );
-  const float s = sinf( value );
-
-  m_Values[ 0 ][ 0 ] =  c;
-  m_Values[ 0 ][ 1 ] = -s;
-  m_Values[ 1 ][ 0 ] =  s;
-  m_Values[ 1 ][ 1 ] =  c;
-
-  return *this;
-}
-
-Mat3f&
-Mat3f::Translation( const Vec2f& t )
-{
-  return Translation( t.X(), t.Y() );
-}
-
-Mat3f&
-Mat3f::Translation( const float& x, const float& y )
+Mat3i&
+Mat3i::Translation( const int& x, const int& y )
 {
   Identity();
 
@@ -98,15 +50,15 @@ Mat3f::Translation( const float& x, const float& y )
   return *this;
 }
 
-Mat3f
-Mat3f::Inverse( void ) const
+Mat3i
+Mat3i::Inverse( void ) const
 {
-  Mat3f result;
-  float determinant = m_Values[0][0] * ( m_Values[1][1] * m_Values[2][2] - m_Values[2][1] * m_Values[1][2] ) -
-                      m_Values[0][1] * ( m_Values[1][0] * m_Values[2][2] - m_Values[1][2] * m_Values[2][0] ) +
-                      m_Values[0][2] * ( m_Values[1][0] * m_Values[2][1] - m_Values[1][1] * m_Values[2][0] );
+  Mat3i result;
+  int determinant = m_Values[0][0] * ( m_Values[1][1] * m_Values[2][2] - m_Values[2][1] * m_Values[1][2] ) -
+                    m_Values[0][1] * ( m_Values[1][0] * m_Values[2][2] - m_Values[1][2] * m_Values[2][0] ) +
+                    m_Values[0][2] * ( m_Values[1][0] * m_Values[2][1] - m_Values[1][1] * m_Values[2][0] );
 
-  if ( determinant == 0.0f ) return *this;
+  if ( determinant == 0 ) return *this;
 
   float invdet = 1.0f / determinant;
 
@@ -123,10 +75,10 @@ Mat3f::Inverse( void ) const
   return result;
 }
 
-Mat3f
-Mat3f::Transpose( void ) const
+Mat3i
+Mat3i::Transpose( void ) const
 {
-  Mat3f result;
+  Mat3i result;
 
   result.m_Values[ 0 ][ 1 ] = m_Values[ 1 ][ 0 ];
   result.m_Values[ 0 ][ 2 ] = m_Values[ 2 ][ 0 ];
@@ -138,10 +90,10 @@ Mat3f::Transpose( void ) const
   return result;
 }
 
-Mat3f
-Mat3f::operator *( const Mat3f& factor ) const
+Mat3i
+Mat3i::operator *( const Mat3i& factor ) const
 {
-  Mat3f result;
+  Mat3i result;
 
   for ( unsigned int row = 0 ; row < 3 ; row++ )
     for ( unsigned int col = 0 ; col < 3; col++ )
@@ -152,24 +104,10 @@ Mat3f::operator *( const Mat3f& factor ) const
   return result;
 }
 
-Vec3f
-Mat3f::operator *( const Vec3f& v ) const
+Mat3i&
+Mat3i::operator *=( const Mat3i& factor )
 {
-  Vec3f result;
-
-  for ( unsigned int row = 0 ; row < 3 ; row++ )
-    for ( unsigned int col = 0 ; col < 3; col++ )
-      result[ row ] = m_Values[ row ][ 0 ] * v.X() +
-                      m_Values[ row ][ 1 ] * v.Y() +
-                      m_Values[ row ][ 2 ] * v.Z();
-
-  return result;
-}
-
-Mat3f&
-Mat3f::operator *=( const Mat3f& factor )
-{
-  Mat3f result;
+  Mat3i result;
 
   for ( unsigned int row = 0 ; row < 3 ; row++ )
     for ( unsigned int col = 0 ; col < 3; col++ )
@@ -181,36 +119,36 @@ Mat3f::operator *=( const Mat3f& factor )
   return *this;
 }
 
-float*
-Mat3f::operator []( unsigned int row )
+int*
+Mat3i::operator []( unsigned int row )
 {
   return m_Values[ row ];
 }
 
-const float*
-Mat3f::operator []( unsigned int row ) const
+const int*
+Mat3i::operator []( unsigned int row ) const
 {
   return m_Values[ row ];
 }
 
-const float*
-Mat3f::Values( void ) const
+const int*
+Mat3i::Values( void ) const
 {
   return *m_Values;
 }
 
 void
-Mat3f::Set( const unsigned int row, const unsigned int col, const float& value )
+Mat3i::Set( const unsigned int row, const unsigned int col, const int& value )
 {
   m_Values[ row ][ col ] = value;
 }
 
 void
-Mat3f::Print( void ) const
+Mat3i::Print( void ) const
 {
-  printf( "( %f | %f | %f )", m_Values[ 0 ][ 0 ], m_Values[ 0 ][ 1 ], m_Values[ 0 ][ 2 ] );
-  printf( "( %f | %f | %f )", m_Values[ 1 ][ 0 ], m_Values[ 1 ][ 1 ], m_Values[ 1 ][ 2 ] );
-  printf( "( %f | %f | %f )", m_Values[ 2 ][ 0 ], m_Values[ 2 ][ 1 ], m_Values[ 2 ][ 2 ] );
+  printf( "( %i | %i | %i )", m_Values[ 0 ][ 0 ], m_Values[ 0 ][ 1 ], m_Values[ 0 ][ 2 ] );
+  printf( "( %i | %i | %i )", m_Values[ 1 ][ 0 ], m_Values[ 1 ][ 1 ], m_Values[ 1 ][ 2 ] );
+  printf( "( %i | %i | %i )", m_Values[ 2 ][ 0 ], m_Values[ 2 ][ 1 ], m_Values[ 2 ][ 2 ] );
 }
 
 /* ************************************************** */

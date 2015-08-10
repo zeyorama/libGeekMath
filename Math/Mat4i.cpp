@@ -56,7 +56,7 @@ Mat4i::Identity( void )
 Mat4i&
 Mat4i::Translation( const int& x, const int& y, const int& z )
 {
-  memset( m_Values, 0, MATRIX_SIZE );
+  Identity();
 
   m_Values[ 0 ][ 3 ] = x;
   m_Values[ 1 ][ 3 ] = y;
