@@ -29,8 +29,13 @@ Created on: Feb 19, 2015
 #include "Math/Vec4f.hpp"
 #include "Math/Quaternion.hpp"
 
+#include "Math/Vec2i.hpp"
+
 #include "Math/Mat3f.hpp"
 #include "Math/Mat4f.hpp"
+
+#include "Math/Mat3i.hpp"
+#include "Math/Mat4i.hpp"
 
 #include "GeekMathConstants.hpp"
 
