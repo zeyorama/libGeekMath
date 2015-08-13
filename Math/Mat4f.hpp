@@ -31,7 +31,8 @@ class Mat4f
 {
 public:
   Mat4f( void );
-  Mat4f( const Mat4f& matrix );
+  Mat4f( const Mat4f& );
+  Mat4f( const float* );
   virtual
   ~Mat4f( void );
 
@@ -42,7 +43,7 @@ public:
   Mat4f
   Identity( void );
   Mat4f
-  Rotation( const Quaternion& quaternion );
+  Rotation( const Quaternion& );
   Mat4f
   Rotation( const Vec3f& forward, const Vec3f& up );
   Mat4f
@@ -50,9 +51,9 @@ public:
   Mat4f
   Rotation( const Vec3f& n, const Vec3f& v, const Vec3f& u );
   Vec3f
-  Transformation( const Vec3f& vector ) const;
+  Transformation( const Vec3f& ) const;
   Quaternion
-  Transformation( const Quaternion& vector ) const;
+  Transformation( const Quaternion& ) const;
   Mat4f
   Inverse( void ) const;
   Mat4f
@@ -75,9 +76,9 @@ public:
   operator *( const Quaternion& ) const;
 
   float*
-  operator []( unsigned int row );
+  operator []( const unsigned int );
   const float*
-  operator []( unsigned int row ) const;
+  operator []( const unsigned int ) const;
 
   const float*
   Values( void ) const;

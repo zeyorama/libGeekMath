@@ -44,6 +44,11 @@ Mat4f::Mat4f( const Mat4f& matrix )
   memcpy( m_Values, matrix.m_Values, MATRIX_SIZE );
 }
 
+Mat4f::Mat4f( const float* values )
+{
+  memcpy( m_Values, values, MATRIX_SIZE );
+}
+
 Mat4f::~Mat4f( void ) { return; }
 
 Mat4f
@@ -188,47 +193,47 @@ Mat4f::Inverse( void ) const
               m[ 12 ] * m[ 6 ]  * m[ 11 ] +
               m[ 12 ] * m[ 7 ]  * m[ 10 ];
 
-  inv[ 8 ] = m[ 4 ]  * m[ 9 ] * m[ 15 ] -
+  inv[ 8 ] = m[ 4 ]  * m[ 9 ]  * m[ 15 ] -
              m[ 4 ]  * m[ 11 ] * m[ 13 ] -
-             m[ 8 ]  * m[ 5 ] * m[ 15 ] +
-             m[ 8 ]  * m[ 7 ] * m[ 13 ] +
-             m[ 12 ] * m[ 5 ] * m[ 11 ] -
-             m[ 12 ] * m[ 7 ] * m[ 9 ];
+             m[ 8 ]  * m[ 5 ]  * m[ 15 ] +
+             m[ 8 ]  * m[ 7 ]  * m[ 13 ] +
+             m[ 12 ] * m[ 5 ]  * m[ 11 ] -
+             m[ 12 ] * m[ 7 ]  * m[ 9 ];
 
-  inv[ 12 ] = -m[ 4 ]  * m[ 9 ] * m[ 14 ] +
+  inv[ 12 ] = -m[ 4 ]  * m[ 9 ]  * m[ 14 ] +
                m[ 4 ]  * m[ 10 ] * m[ 13 ] +
-               m[ 8 ]  * m[ 5 ] * m[ 14 ] -
-               m[ 8 ]  * m[ 6 ] * m[ 13 ] -
-               m[ 12 ] * m[ 5 ] * m[ 10 ] +
-               m[ 12 ] * m[ 6 ] * m[ 9 ];
+               m[ 8 ]  * m[ 5 ]  * m[ 14 ] -
+               m[ 8 ]  * m[ 6 ]  * m[ 13 ] -
+               m[ 12 ] * m[ 5 ]  * m[ 10 ] +
+               m[ 12 ] * m[ 6 ]  * m[ 9 ];
 
   inv[ 1 ] = -m[ 1 ]  * m[ 10 ] * m[ 15 ] +
               m[ 1 ]  * m[ 11 ] * m[ 14 ] +
-              m[ 9 ]  * m[ 2 ] * m[ 15 ] -
-              m[ 9 ]  * m[ 3 ] * m[ 14 ] -
-              m[ 13 ] * m[ 2 ] * m[ 11 ] +
-              m[ 13 ] * m[ 3 ] * m[ 10 ];
+              m[ 9 ]  * m[ 2 ]  * m[ 15 ] -
+              m[ 9 ]  * m[ 3 ]  * m[ 14 ] -
+              m[ 13 ] * m[ 2 ]  * m[ 11 ] +
+              m[ 13 ] * m[ 3 ]  * m[ 10 ];
 
   inv[ 5 ] = m[ 0 ]  * m[ 10 ] * m[ 15 ] -
              m[ 0 ]  * m[ 11 ] * m[ 14 ] -
-             m[ 8 ]  * m[ 2 ] * m[ 15 ] +
-             m[ 8 ]  * m[ 3 ] * m[ 14 ] +
-             m[ 12 ] * m[ 2 ] * m[ 11 ] -
-             m[ 12 ] * m[ 3 ] * m[ 10 ];
+             m[ 8 ]  * m[ 2 ]  * m[ 15 ] +
+             m[ 8 ]  * m[ 3 ]  * m[ 14 ] +
+             m[ 12 ] * m[ 2 ]  * m[ 11 ] -
+             m[ 12 ] * m[ 3 ]  * m[ 10 ];
 
-  inv[ 9 ] = -m[ 0 ]  * m[ 9 ] * m[ 15 ] +
+  inv[ 9 ] = -m[ 0 ]  * m[ 9 ]  * m[ 15 ] +
               m[ 0 ]  * m[ 11 ] * m[ 13 ] +
-              m[ 8 ]  * m[ 1 ] * m[ 15 ] -
-              m[ 8 ]  * m[ 3 ] * m[ 13 ] -
-              m[ 12 ] * m[ 1 ] * m[ 11 ] +
-              m[ 12 ] * m[ 3 ] * m[ 9 ];
+              m[ 8 ]  * m[ 1 ]  * m[ 15 ] -
+              m[ 8 ]  * m[ 3 ]  * m[ 13 ] -
+              m[ 12 ] * m[ 1 ]  * m[ 11 ] +
+              m[ 12 ] * m[ 3 ]  * m[ 9 ];
 
-  inv[ 13 ] = m[ 0 ]  * m[ 9 ] * m[ 14 ] -
+  inv[ 13 ] = m[ 0 ]  * m[ 9 ]  * m[ 14 ] -
               m[ 0 ]  * m[ 10 ] * m[ 13 ] -
-              m[ 8 ]  * m[ 1 ] * m[ 14 ] +
-              m[ 8 ]  * m[ 2 ] * m[ 13 ] +
-              m[ 12 ] * m[ 1 ] * m[ 10 ] -
-              m[ 12 ] * m[ 2 ] * m[ 9 ];
+              m[ 8 ]  * m[ 1 ]  * m[ 14 ] +
+              m[ 8 ]  * m[ 2 ]  * m[ 13 ] +
+              m[ 12 ] * m[ 1 ]  * m[ 10 ] -
+              m[ 12 ] * m[ 2 ]  * m[ 9 ];
 
   inv[ 2 ] = m[ 1 ]  * m[ 6 ] * m[ 15 ] -
              m[ 1 ]  * m[ 7 ] * m[ 14 ] -
@@ -423,13 +428,13 @@ Mat4f::operator *( const Quaternion& q ) const
 }
 
 float*
-Mat4f::operator []( unsigned int row )
+Mat4f::operator []( const unsigned int row )
 {
   return m_Values[ row ];
 }
 
 const float*
-Mat4f::operator []( unsigned int row ) const
+Mat4f::operator []( const unsigned int row ) const
 {
   return m_Values[ row ];
 }
