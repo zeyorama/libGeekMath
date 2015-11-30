@@ -70,6 +70,9 @@ public:
                 const float zNear, const float zFar );
 
   Mat4f
+  InverseRotation( void ) const;
+
+  Mat4f
   operator *( const Mat4f& ) const;
 
   Quaternion
