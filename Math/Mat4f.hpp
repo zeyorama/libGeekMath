@@ -24,6 +24,7 @@
 #ifndef MAT4F_H_
 #define MAT4F_H_
 
+class Vec3f;
 class Quaternion;
 
 class Mat4f
