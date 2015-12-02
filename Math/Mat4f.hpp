@@ -24,7 +24,6 @@
 #ifndef MAT4F_H_
 #define MAT4F_H_
 
-class Vec3f;
 class Quaternion;
 
 class Mat4f
@@ -68,9 +67,6 @@ public:
   Orthographic( const float Left, const float Right,
                 const float Bottom, const float Top,
                 const float zNear, const float zFar );
-
-  Mat4f
-  InverseRotation( void ) const;
 
   Mat4f
   operator *( const Mat4f& ) const;

@@ -25,7 +25,6 @@
 
 #include "Vec2f.hpp"
 #include "Vec3f.hpp"
-#include "Mat3f.hpp"
 #include "Quaternion.hpp"
 #include "../GeekMathConstants.hpp"
 
@@ -400,37 +399,6 @@ Mat4f::Orthographic( const float Left, const float Right,
   m_Values[2][2] = -2.0f / depth; m_Values[2][3] = -( ( zFar + zNear ) / depth );
 
   return *this;
-}
-
-Mat4f
-Mat4f::InverseRotation( void ) const
-{
-  Mat4f inv = Mat4f( *this );
-  Mat3f tmp = Mat3f().Identity();
-
-  tmp.Set( 0, 0, m_Values[ 0 ][ 0 ] );
-  tmp.Set( 0, 1, m_Values[ 0 ][ 1 ] );
-  tmp.Set( 0, 2, m_Values[ 0 ][ 2 ] );
-  tmp.Set( 1, 0, m_Values[ 1 ][ 0 ] );
-  tmp.Set( 1, 1, m_Values[ 1 ][ 1 ] );
-  tmp.Set( 1, 2, m_Values[ 1 ][ 2 ] );
-  tmp.Set( 2, 0, m_Values[ 2 ][ 0 ] );
-  tmp.Set( 2, 1, m_Values[ 2 ][ 1 ] );
-  tmp.Set( 2, 2, m_Values[ 2 ][ 2 ] );
-
-  tmp = tmp.Transpose();
-
-  inv.m_Values[ 0 ][ 0 ] = tmp[ 0 ][ 0 ];
-  inv.m_Values[ 0 ][ 1 ] = tmp[ 0 ][ 1 ];
-  inv.m_Values[ 0 ][ 2 ] = tmp[ 0 ][ 2 ];
-  inv.m_Values[ 1 ][ 0 ] = tmp[ 1 ][ 0 ];
-  inv.m_Values[ 1 ][ 1 ] = tmp[ 1 ][ 1 ];
-  inv.m_Values[ 1 ][ 2 ] = tmp[ 1 ][ 2 ];
-  inv.m_Values[ 2 ][ 0 ] = tmp[ 2 ][ 0 ];
-  inv.m_Values[ 2 ][ 1 ] = tmp[ 2 ][ 1 ];
-  inv.m_Values[ 2 ][ 2 ] = tmp[ 2 ][ 2 ];
-
-  return inv;
 }
 
 Mat4f
